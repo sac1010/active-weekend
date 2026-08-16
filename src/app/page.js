@@ -423,6 +423,16 @@ export default function ExploreDashboard() {
           <RefreshCw className="h-8 w-8 text-emerald-400 animate-spin" />
           <p className="text-slate-500 text-xs font-semibold">Loading squad listings near you...</p>
         </div>
+      ) : (activeTab !== 'explore' && !currentUser) ? (
+        <div className="text-center py-16 border border-slate-800 bg-slate-950/20 rounded-2xl p-8 max-w-md mx-auto space-y-4">
+          <Award className="h-12 w-12 text-indigo-400 mx-auto animate-pulse" />
+          <div className="space-y-1">
+            <p className="text-slate-300 text-sm font-bold">Sign-In Required</p>
+            <p className="text-slate-500 text-xs leading-relaxed">
+              Please sign in with your Google account to view your scheduled games, chat with squads, or view your hosted events history.
+            </p>
+          </div>
+        </div>
       ) : filteredEvents.length === 0 ? (
         <div className="text-center py-16 border border-dashed border-slate-800/80 rounded-2xl p-6">
           <p className="text-slate-400 text-sm font-semibold mb-1">No active squads found.</p>

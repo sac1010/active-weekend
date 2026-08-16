@@ -105,3 +105,30 @@ body {
   border-color: rgba(14, 165, 233, 0.7);
   box-shadow: 0 0 20px rgba(14, 165, 233, 0.25);
 }
+
+.border-riding {
+  border-color: rgba(20, 184, 166, 0.3);
+  box-shadow: 0 0 15px rgba(20, 184, 166, 0.1);
+}
+.border-riding:hover {
+  border-color: rgba(20, 184, 166, 0.7);
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.25);
+}
+
+.border-cricket {
+  border-color: rgba(234, 179, 8, 0.3);
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.1);
+}
+.border-cricket:hover {
+  border-color: rgba(234, 179, 8, 0.7);
+  box-shadow: 0 0 20px rgba(234, 179, 8, 0.25);
+}
+
+.border-football {
+  border-color: rgba(244, 63, 94, 0.3);
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.1);
+}
+.border-football:hover {
+  border-color: rgba(244, 63, 94, 0.7);
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.25);
+}

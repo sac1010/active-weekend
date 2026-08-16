@@ -65,6 +65,36 @@ export const ACTIVITIES = [
     textClass: "text-sky-400",
     borderClass: "border-trekking",
     fallbackImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
+  },
+  { 
+    name: "Riding", 
+    value: "Riding", 
+    color: "teal",
+    icon: "🚴",
+    bgClass: "bg-teal-500/10",
+    textClass: "text-teal-400",
+    borderClass: "border-riding",
+    fallbackImage: "https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?w=800&q=80"
+  },
+  { 
+    name: "Cricket", 
+    value: "Cricket", 
+    color: "yellow",
+    icon: "🏏",
+    bgClass: "bg-yellow-500/10",
+    textClass: "text-yellow-400",
+    borderClass: "border-cricket",
+    fallbackImage: "https://images.unsplash.com/photo-1531415080290-bc98545ab2ef?w=800&q=80"
+  },
+  { 
+    name: "Football", 
+    value: "Football", 
+    color: "rose",
+    icon: "⚽",
+    bgClass: "bg-rose-500/10",
+    textClass: "text-rose-400",
+    borderClass: "border-football",
+    fallbackImage: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80"
   }
 ];
 
