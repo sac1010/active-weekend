@@ -196,38 +196,38 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full glass border-b border-[rgba(255,255,255,0.06)] px-4 py-3 md:px-8">
       <div className="mx-auto max-w-7xl flex items-center justify-between">
         {/* Brand Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <motion.div
             initial={{ rotate: -15, scale: 0.9 }}
             animate={{ rotate: 0, scale: 1 }}
             transition={{ type: 'spring', stiffness: 200 }}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-indigo-600 shadow-lg shadow-emerald-500/20"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-indigo-600 shadow-lg shadow-emerald-500/20"
           >
-            <span className="font-bold text-white text-xl">A</span>
+            <span className="font-bold text-white text-lg sm:text-xl">A</span>
           </motion.div>
           <div>
-            <h1 className="text-lg font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-indigo-300 bg-clip-text text-transparent">
+            <h1 className="text-sm sm:text-lg font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-indigo-300 bg-clip-text text-transparent">
               ActiveWeekend
             </h1>
-            <span className="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider block leading-none">
+            <span className="text-[9px] sm:text-[10px] text-emerald-400 font-semibold uppercase tracking-wider hidden sm:block leading-none">
               Bangalore Edition
             </span>
           </div>
         </div>
 
         {/* Action Widgets */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
           {user && profile ? (
             <>
               {/* TrustPoints Indicator */}
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/60 border border-emerald-500/20 text-emerald-400 text-sm font-medium shadow-inner shadow-emerald-950/20">
-                <span className="text-base select-none">🤝</span>
+              <div className="flex items-center gap-1 px-2 py-1 sm:px-3 sm:py-1.5 rounded-full bg-slate-900/60 border border-emerald-500/20 text-emerald-400 text-xs sm:text-sm font-medium shadow-inner shadow-emerald-950/20">
+                <span className="text-sm sm:text-base select-none">🤝</span>
                 <span>{profile.trust_points}</span>
                 <span className="text-[10px] text-slate-400 font-normal ml-0.5 hidden sm:inline">TrustPoints</span>
               </div>
 
               {/* Host Level Badge Progress */}
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/60 border border-indigo-500/20 text-indigo-300 text-sm font-medium">
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/60 border border-indigo-500/20 text-indigo-300 text-sm font-medium">
                 <Award className="h-4 w-4 text-indigo-400" />
                 <span className="text-xs">
                   {profile.successful_hostings >= 3 
