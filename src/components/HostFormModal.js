@@ -5,8 +5,10 @@ import { supabase, compressImage } from '@/lib/supabase';
 import { LOCALITIES, ACTIVITIES, SKILL_LEVELS } from '@/lib/constants';
 import { X, Calendar, Clock, MapPin, DollarSign, Users, Award, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useToast } from '@/lib/ToastContext';
 
 export default function HostFormModal({ currentUser, onClose, onActionComplete }) {
+  const { showToast } = useToast();
   const [hostProfile, setHostProfile] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -75,7 +77,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
     if (!currentUser) return;
 
     if (startTime >= endTime) {
-      alert('End time must be after the start time.');
+      showToast('End time must be after the start time.', 'error');
       return;
     }
 
@@ -106,7 +108,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
 
         uploadedImageUrl = publicUrl;
       } catch (err) {
-        alert('Failed to upload cover image: ' + err.message);
+        showToast('Failed to upload cover image: ' + err.message, 'error');
         setUploadingImage(false);
         setSubmitting(false);
         return;
@@ -187,8 +189,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
       if (onActionComplete) onActionComplete();
       onClose();
     } catch (err) {
-      alert(err.message || 'Failed to host event.');
-    } finally {
+      showToast(err.message || 'Failed to host event.', 'error');
       setSubmitting(false);
     }
   };

@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Bell, LogIn, LogOut, Award, ChevronDown, Sparkles, Check, CheckSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useToast } from '@/lib/ToastContext';
 
 export default function Header() {
+  const { showToast } = useToast();
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState(null);
   const [notifications, setNotifications] = useState([]);
@@ -161,7 +163,7 @@ export default function Header() {
     // In local development with mock credentials, sign in with a mock test session
     const isMock = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true;
     if (isMock) {
-      alert('Supabase credentials are not configured. Launching simulated profile.');
+      showToast('Supabase credentials are not configured. Launching simulated profile.', 'warning');
       const mockId = '00000000-0000-0000-0000-000000000000';
       setUser({ id: mockId, email: 'bangalore.player@activeweekend.com' });
       setProfile({

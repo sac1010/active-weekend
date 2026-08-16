@@ -8,8 +8,12 @@ import { Search, MapPin, Calendar, Filter, Plus, SlidersHorizontal, RefreshCw, S
 import { motion, AnimatePresence } from 'framer-motion';
 import DetailsDrawer from '@/components/DetailsDrawer';
 import HostFormModal from '@/components/HostFormModal';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/lib/ToastContext';
 
 export default function ExploreDashboard() {
+  const { showToast } = useToast();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('explore'); // 'explore', 'scheduled', 'hosted'
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -221,7 +225,7 @@ export default function ExploreDashboard() {
           </p>
         </div>
         <button
-          onClick={() => currentUser ? setShowHostModal(true) : alert('Please Sign-In via Google first to host events.')}
+          onClick={() => currentUser ? setShowHostModal(true) : showToast('Please Sign-In via Google first to host events.', 'warning')}
           className="relative px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-xl shadow-emerald-950/45 transition-all flex items-center gap-2 shrink-0 active:scale-95 z-10"
         >
           <Plus className="h-4.5 w-4.5 stroke-[3px]" />

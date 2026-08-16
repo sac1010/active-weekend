@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Shield, CheckCircle, AlertTriangle, RefreshCw, Trash2, ArrowLeft, UserX, UserCheck } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '@/lib/ToastContext';
 
 export default function AdminConsole() {
+  const { showToast } = useToast();
   const [loading, setLoading] = useState(true);
   const [completedEvents, setCompletedEvents] = useState([]);
   const [flaggedEvents, setFlaggedEvents] = useState([]);
@@ -82,7 +84,7 @@ export default function AdminConsole() {
   const handleResolveDispute = async (eventId, decision) => {
     setSubmittingAction(true);
     if (isMock) {
-      alert(`Dispute resolved! Decision: ${decision}`);
+      showToast(`Dispute resolved! Decision: ${decision}`, 'success');
       setFlaggedEvents(prev => prev.filter(e => e.id !== eventId));
       setSubmittingAction(false);
       return;
@@ -106,7 +108,7 @@ export default function AdminConsole() {
 
         if (eventError) throw eventError;
 
-        alert('Dispute resolved: Refund processed successfully.');
+        showToast('Dispute resolved: Refund processed successfully.', 'success');
       } else {
         // Host attended: Complete match and disburse funds
         const { error: completeError } = await supabase
@@ -116,11 +118,11 @@ export default function AdminConsole() {
 
         if (completeError) throw completeError;
 
-        alert('Dispute resolved: Payout released to host.');
+        showToast('Dispute resolved: Payout released to host.', 'success');
       }
       fetchAdminData();
     } catch (err) {
-      alert(err.message || 'Failed to resolve dispute.');
+      showToast(err.message || 'Failed to resolve dispute.', 'error');
     } finally {
       setSubmittingAction(false);
     }

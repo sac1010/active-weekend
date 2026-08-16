@@ -7,6 +7,7 @@ import { X, MapPin, Calendar, Clock, Award, Send, Users, AlertTriangle, Image as
 import { motion, AnimatePresence } from 'framer-motion';
 import { compressImage } from '@/lib/supabase'; // We'll add this canvas utility later
 import { ACTIVITIES } from '@/lib/constants';
+import { useToast } from '@/lib/ToastContext';
 
 // Custom modern X (formerly Twitter) SVG Icon
 function XIcon(props) {
@@ -18,6 +19,7 @@ function XIcon(props) {
 }
 
 export default function DetailsDrawer({ eventId, currentUser, onClose, onActionComplete }) {
+  const { showToast } = useToast();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -243,7 +245,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
   // Join Event (Free / Cash payment trigger)
   const handleJoinFree = async () => {
     if (!currentUser) {
-      alert('Please Sign-In via Google first.');
+      showToast('Please Sign-In via Google first.', 'warning');
       return;
     }
     setSubmittingAction(true);
@@ -281,7 +283,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
       if (onActionComplete) onActionComplete();
       fetchDetails();
     } catch (e) {
-      alert(e.message || 'Failed to join. Roster might be full.');
+      showToast(e.message || 'Failed to join. Roster might be full.', 'error');
     } finally {
       setSubmittingAction(false);
     }
@@ -291,7 +293,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
   const handleUpiSubmit = async (e) => {
     e.preventDefault();
     if (!upiUtr.trim() || upiUtr.length !== 12 || isNaN(upiUtr)) {
-      alert('Please enter a valid 12-digit numeric UPI reference (UTR) code.');
+      showToast('Please enter a valid 12-digit numeric UPI reference (UTR) code.', 'error');
       return;
     }
     setSubmittingAction(true);
@@ -329,11 +331,11 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
 
       setShowUpiModal(false);
       setUpiUtr('');
-      alert('UTR submitted! Your booking is pending host confirmation.');
+      showToast('UTR submitted! Your booking is pending host confirmation.', 'success');
       if (onActionComplete) onActionComplete();
       fetchDetails();
     } catch (err) {
-      alert('This UTR has already been submitted. Please check the transaction record and enter a unique reference.');
+      showToast('This UTR has already been submitted. Please check the transaction record and enter a unique reference.', 'error');
     } finally {
       setSubmittingAction(false);
     }
@@ -356,7 +358,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
     try {
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
-        alert('Failed to load Razorpay SDK. Please check your internet connection.');
+        showToast('Failed to load Razorpay SDK. Please check your internet connection.', 'error');
         return;
       }
 
@@ -405,7 +407,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
         });
         const verifyData = await verifyRes.json();
         if (verifyData.success) {
-          alert('Simulated Razorpay Checkout Successful! (Test Mode)');
+          showToast('Simulated Razorpay Checkout Successful! (Test Mode)', 'success');
           setIsJoined(true);
           setShowPaymentChoice(false);
           if (onActionComplete) onActionComplete();
@@ -438,13 +440,13 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
             const verifyData = await verifyRes.json();
             setSubmittingAction(false);
             if (verifyData.success) {
-              alert('Payment verified and slot confirmed! 🎉');
+              showToast('Payment verified and slot confirmed! 🎉', 'success');
               setIsJoined(true);
               setShowPaymentChoice(false);
               if (onActionComplete) onActionComplete();
               fetchDetails();
             } else {
-              alert('Payment verification failed: ' + verifyData.error);
+              showToast('Payment verification failed: ' + verifyData.error, 'error');
             }
           },
           prefill: {
@@ -459,7 +461,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
       }
     } catch (err) {
       console.error(err);
-      alert(err.message || 'Error processing payment.');
+      showToast(err.message || 'Error processing payment.', 'error');
     } finally {
       setSubmittingAction(false);
     }
@@ -544,7 +546,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
       if (onActionComplete) onActionComplete();
       fetchDetails();
     } catch (e) {
-      alert(e.message || 'Failed to leave roster.');
+      showToast(e.message || 'Failed to leave roster.', 'error');
     } finally {
       setSubmittingAction(false);
     }
@@ -553,7 +555,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
   // Host: Confirm guest UTR payment
   const handleConfirmPayment = async (bookingId, guestId) => {
     if (isMock) {
-      alert('Mock payment confirmed!');
+      showToast('Mock payment confirmed!', 'success');
       return;
     }
     setSubmittingAction(true);
@@ -574,7 +576,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
 
       fetchDetails();
     } catch (e) {
-      alert(e.message);
+      showToast(e.message, 'error');
     } finally {
       setSubmittingAction(false);
     }
@@ -606,7 +608,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
 
       fetchDetails();
     } catch (e) {
-      alert(e.message);
+      showToast(e.message, 'error');
     } finally {
       setSubmittingAction(false);
     }
@@ -616,14 +618,14 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
   const handleCompleteEvent = async (e) => {
     e.preventDefault();
     if (!selectedPhoto && !isMock) {
-      alert('Please upload a verified group selfie taken at the venue to complete the event.');
+      showToast('Please upload a verified group selfie taken at the venue to complete the event.', 'warning');
       return;
     }
     setUploadingPhoto(true);
 
     if (isMock) {
       setTimeout(() => {
-        alert('Event successfully completed! (Mock points disbursed)');
+        showToast('Event successfully completed! (Mock points disbursed)', 'success');
         setShowCompletionForm(false);
         if (onActionComplete) onActionComplete();
         onClose();
@@ -661,13 +663,13 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
 
       if (updateError) throw updateError;
 
-      alert('Event successfully completed! Group selfie uploaded, and rewards disbursed.');
+      showToast('Event successfully completed! Group selfie uploaded, and rewards disbursed.', 'success');
       setShowCompletionForm(false);
       if (onActionComplete) onActionComplete();
       onClose();
     } catch (err) {
       console.error(err);
-      alert(err.message || 'Error processing completion.');
+      showToast(err.message || 'Error processing completion.', 'error');
     } finally {
       setUploadingPhoto(false);
     }
