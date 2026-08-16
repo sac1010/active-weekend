@@ -17,7 +17,8 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
   const [locality, setLocality] = useState(LOCALITIES[0]);
   const [venueName, setVenueName] = useState('');
   const [eventDate, setEventDate] = useState('');
-  const [eventTime, setEventTime] = useState('7:00 AM - 9:00 AM');
+  const [startTime, setStartTime] = useState('07:00');
+  const [endTime, setEndTime] = useState('09:00');
   const [skillLevel, setSkillLevel] = useState('Intermediate');
   const [maxSlots, setMaxSlots] = useState(4);
   const [costType, setCostType] = useState('Free');
@@ -56,10 +57,29 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
     fetchHostProfile();
   }, [currentUser]);
 
+  const formatTime12Hour = (timeStr) => {
+    if (!timeStr) return '';
+    const [hoursStr, minutesStr] = timeStr.split(':');
+    let hours = parseInt(hoursStr, 10);
+    const minutes = minutesStr;
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    return `${hours}:${minutes} ${ampm}`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentUser) return;
+
+    if (startTime >= endTime) {
+      alert('End time must be after the start time.');
+      return;
+    }
+
     setSubmitting(true);
+
+    const event_time = `${formatTime12Hour(startTime)} - ${formatTime12Hour(endTime)}`;
 
     const eventData = {
       host_id: currentUser.id,
@@ -68,7 +88,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
       locality,
       venue_name: venueName,
       event_date: eventDate,
-      event_time: eventTime,
+      event_time,
       skill_level: skillLevel,
       max_slots: Number(maxSlots),
       cost_type: costType,
@@ -226,7 +246,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
             </div>
 
             {/* Date & Time & Skill */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
               <div className="space-y-1">
                 <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Match Date</label>
                 <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
@@ -234,24 +254,38 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
                   <input
                     type="date"
                     required
+                    min={new Date().toISOString().split('T')[0]}
                     value={eventDate}
                     onChange={(e) => setEventDate(e.target.value)}
-                    className="bg-transparent text-slate-200 focus:outline-none w-full"
+                    className="bg-transparent text-slate-200 focus:outline-none w-full [color-scheme:dark]"
                   />
                 </div>
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Time Slot</label>
+                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Start Time</label>
                 <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
                   <Clock className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
                   <input
-                    type="text"
+                    type="time"
                     required
-                    placeholder="e.g. 7-9 AM"
-                    value={eventTime}
-                    onChange={(e) => setEventTime(e.target.value)}
-                    className="bg-transparent text-slate-200 focus:outline-none w-full"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    className="bg-transparent text-slate-200 focus:outline-none w-full [color-scheme:dark]"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">End Time</label>
+                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
+                  <Clock className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
+                  <input
+                    type="time"
+                    required
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    className="bg-transparent text-slate-200 focus:outline-none w-full [color-scheme:dark]"
                   />
                 </div>
               </div>
