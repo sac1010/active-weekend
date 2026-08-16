@@ -209,9 +209,6 @@ export default function Header() {
             <h1 className="text-sm sm:text-lg font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-indigo-300 bg-clip-text text-transparent">
               ActiveWeekend
             </h1>
-            <span className="text-[9px] sm:text-[10px] text-emerald-400 font-semibold uppercase tracking-wider hidden sm:block leading-none">
-              Bangalore Edition
-            </span>
           </div>
         </div>
 
