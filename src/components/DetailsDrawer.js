@@ -935,7 +935,13 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
                   ) : (
                     /* Paid join trigger */
                     <button
-                      onClick={() => setShowPaymentChoice(true)}
+                      onClick={() => {
+                        if (!currentUser) {
+                          showToast('Please Sign-In via Google first to join squads.', 'warning');
+                          return;
+                        }
+                        setShowPaymentChoice(true);
+                      }}
                       className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all active:scale-98"
                     >
                       Join (Pay ₹{event.cost_value})
