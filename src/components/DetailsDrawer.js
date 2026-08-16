@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { MOCK_CHATS } from '@/lib/mockData';
 import { X, MapPin, Calendar, Clock, Award, Send, Users, AlertTriangle, Image as ImageIcon, CheckCircle, ShieldAlert } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { compressImage } from '@/lib/supabase'; // We'll add this canvas utility later
 import { ACTIVITIES } from '@/lib/constants';
 
