@@ -179,15 +179,42 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
     }
 
     try {
-      const { error } = await supabase
+      const { data: newChat, error } = await supabase
         .from('chats')
         .insert({
           event_id: eventId,
           user_id: currentUser.id,
           message: filtered
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Fetch user profile info to render immediately
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('username, avatar_url')
+        .eq('id', currentUser.id)
+        .single();
+
+      const formattedMessage = {
+        id: newChat.id,
+        message: newChat.message,
+        created_at: newChat.created_at,
+        user: {
+          id: currentUser.id,
+          username: profileData?.username || currentUser.email.split('@')[0],
+          avatar_url: profileData?.avatar_url || 'https://api.dicebear.com/7.x/bottts/svg'
+        }
+      };
+
+      // Append to local state if it hasn't been added already (e.g. by Realtime listener)
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === newChat.id)) return prev;
+        return [...prev, formattedMessage];
+      });
+
       setNewMessage('');
     } catch (err) {
       console.error('Error sending message:', err);
