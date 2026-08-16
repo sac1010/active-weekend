@@ -49,10 +49,21 @@ export default function ExploreDashboard() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Parse direct query parameter to open detail drawer (e.g. from SEO landing links)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const eventId = params.get('event');
+      if (eventId) {
+        setActiveEventId(eventId);
+      }
+    }
+  }, []);
+
   // Fetch events from Supabase or Mock fallback
   const fetchEvents = async () => {
     setLoading(true);
-    const isMock = process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+    const isMock = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true;
 
     if (isMock) {
       // Simulate API load

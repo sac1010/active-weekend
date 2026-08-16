@@ -24,7 +24,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
   const [costValue, setCostValue] = useState(0);
   const [description, setDescription] = useState('');
 
-  const isMock = process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') || (currentUser?.id === '00000000-0000-0000-0000-000000000000');
+  const isMock = (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true) || (currentUser?.id === '00000000-0000-0000-0000-000000000000');
 
   // Fetch host profile details
   useEffect(() => {

@@ -159,7 +159,7 @@ export default function Header() {
 
   const handleLogin = async () => {
     // In local development with mock credentials, sign in with a mock test session
-    const isMock = process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+    const isMock = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true;
     if (isMock) {
       alert('Supabase credentials are not configured. Launching simulated profile.');
       const mockId = '00000000-0000-0000-0000-000000000000';

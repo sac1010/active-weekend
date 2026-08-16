@@ -11,7 +11,7 @@ export default function AdminConsole() {
   const [flaggedEvents, setFlaggedEvents] = useState([]);
   const [submittingAction, setSubmittingAction] = useState(false);
 
-  const isMock = process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder');
+  const isMock = process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true;
 
   const fetchAdminData = async () => {
     setLoading(true);
