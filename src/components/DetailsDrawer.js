@@ -748,6 +748,23 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
             </div>
           </div>
 
+          {/* Completed Event Verification Group Photo */}
+          {event.status === 'Completed' && event.photo_url && (
+            <div className="space-y-2">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <CheckCircle className="h-4 w-4 text-emerald-400" />
+                <span>Match Group Selfie</span>
+              </h3>
+              <div className="relative h-48 w-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/40">
+                <img
+                  src={event.photo_url}
+                  alt="Group Verification"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            </div>
+          )}
+
           {/* Roster Grid */}
           <div className="space-y-2">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
