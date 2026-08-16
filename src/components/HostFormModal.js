@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, compressImage } from '@/lib/supabase';
 import { LOCALITIES, ACTIVITIES, SKILL_LEVELS } from '@/lib/constants';
 import { X, Calendar, Clock, MapPin, DollarSign, Users, Award, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -20,6 +20,8 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
   const [startTime, setStartTime] = useState('07:00');
   const [endTime, setEndTime] = useState('09:00');
   const [skillLevel, setSkillLevel] = useState('Intermediate');
+  const [coverImage, setCoverImage] = useState(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [maxSlots, setMaxSlots] = useState(4);
   const [costType, setCostType] = useState('Free');
   const [costValue, setCostValue] = useState(0);
@@ -81,6 +83,37 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
 
     const event_time = `${formatTime12Hour(startTime)} - ${formatTime12Hour(endTime)}`;
 
+    let uploadedImageUrl = null;
+
+    if (coverImage) {
+      setUploadingImage(true);
+      try {
+        const compressed = await compressImage(coverImage);
+        const fileName = `${currentUser.id}/banners/${Date.now()}.jpg`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('event-verifications')
+          .upload(fileName, compressed, {
+            cacheControl: '3600',
+            upsert: true
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('event-verifications')
+          .getPublicUrl(fileName);
+
+        uploadedImageUrl = publicUrl;
+      } catch (err) {
+        alert('Failed to upload cover image: ' + err.message);
+        setUploadingImage(false);
+        setSubmitting(false);
+        return;
+      }
+      setUploadingImage(false);
+    }
+
     const eventData = {
       host_id: currentUser.id,
       title,
@@ -94,7 +127,8 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
       cost_type: costType,
       cost_value: costType === 'Free' ? 0 : Number(costValue),
       description,
-      status: 'Open'
+      status: 'Open',
+      cover_image_url: uploadedImageUrl
     };
 
     if (isMock) {
@@ -109,7 +143,8 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
         bookings: [
           { user_id: currentUser.id, user: { avatar_url: 'https://api.dicebear.com/7.x/bottts/svg?seed=sid' } }
         ],
-        ...eventData
+        ...eventData,
+        cover_image_url: coverImage ? URL.createObjectURL(coverImage) : null
       };
       MOCK_EVENTS.unshift(newMockEvent);
       setTimeout(() => {
@@ -373,6 +408,26 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
                 </p>
               </div>
             )}
+
+            {/* Optional Cover Image Banner */}
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+                Event Cover Image (Optional)
+              </label>
+              <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-800 bg-slate-950/40">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setCoverImage(e.target.files[0] || null)}
+                  className="text-slate-400 hover:text-slate-200 text-xs w-full file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-slate-900 file:text-slate-300 hover:file:bg-slate-800 file:cursor-pointer"
+                />
+                {coverImage && (
+                  <span className="text-[10px] text-emerald-400 font-bold shrink-0">
+                    Selected
+                  </span>
+                )}
+              </div>
+            </div>
 
             {/* Description Notes */}
             <div className="space-y-1">

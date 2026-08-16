@@ -681,18 +681,36 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
         transition={{ type: 'tween', duration: 0.3 }}
         className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] glass-premium border-l border-slate-800/80 shadow-2xl flex flex-col justify-between overflow-hidden"
       >
-        {/* Drawer Header */}
-        <div className="p-4 border-b border-slate-800 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-lg">{activity.icon}</span>
-            <div>
-              <h2 className="font-bold text-sm text-white truncate max-w-[280px]">{event.title}</h2>
-              <p className="text-[10px] text-slate-400 leading-none">{event.skill_level} · {event.locality}</p>
-            </div>
-          </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-900">
-            <X className="h-4.5 w-4.5" />
+        {/* Drawer Header Event Banner */}
+        <div className="relative h-44 sm:h-48 w-full shrink-0 overflow-hidden bg-slate-950">
+          <img
+            src={event.cover_image_url || activity.fallbackImage}
+            alt={event.title}
+            className="h-full w-full object-cover transition-opacity duration-300"
+          />
+          {/* Dark overlay gradient to blend with the app background */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#090d16] via-[#090d16]/30 to-slate-950/20" />
+
+          {/* Floating close button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-xl bg-slate-950/70 border border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-950 transition-all z-10"
+          >
+            <X className="h-4 w-4 stroke-[2.5]" />
           </button>
+
+          {/* Event Title & Metadata overlay */}
+          <div className="absolute bottom-4 left-5 right-5 space-y-1.5">
+            <span className={`px-2.5 py-0.5 rounded-md text-[9px] font-extrabold uppercase tracking-wider ${activity.bgClass} ${activity.textClass} border border-[rgba(255,255,255,0.06)]`}>
+              {activity.icon} {event.activity_type}
+            </span>
+            <h2 className="font-extrabold text-base sm:text-lg text-white leading-snug drop-shadow-md truncate">
+              {event.title}
+            </h2>
+            <p className="text-[10px] text-slate-300 font-medium drop-shadow leading-none">
+              {event.skill_level} · {event.locality}
+            </p>
+          </div>
         </div>
 
         {/* Drawer Scrollable Content */}
