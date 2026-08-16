@@ -3,10 +3,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { MOCK_CHATS } from '@/lib/mockData';
-import { X, MapPin, Calendar, Clock, Award, Send, Users, AlertTriangle, Image as ImageIcon, CheckCircle, ShieldAlert } from 'lucide-react';
+import { X, MapPin, Calendar, Clock, Award, Send, Users, AlertTriangle, Image as ImageIcon, CheckCircle, ShieldAlert, Link2, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { compressImage } from '@/lib/supabase'; // We'll add this canvas utility later
 import { ACTIVITIES } from '@/lib/constants';
+
+// Custom modern X (formerly Twitter) SVG Icon
+function XIcon(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
 
 export default function DetailsDrawer({ eventId, currentUser, onClose, onActionComplete }) {
   const [event, setEvent] = useState(null);
@@ -26,6 +35,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
   const [showUpiModal, setShowUpiModal] = useState(false);
   const [showPaymentChoice, setShowPaymentChoice] = useState(false);
   const [upiUtr, setUpiUtr] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -35,6 +45,15 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleCopyLink = () => {
+    if (typeof window !== 'undefined' && event) {
+      const shareUrl = `${window.location.origin}/event/${event.id}`;
+      navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   // Fetch Event details and chat logs
   const fetchDetails = async () => {
@@ -745,6 +764,43 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
             <div className="border-t border-slate-800/40 pt-3 space-y-1">
               <span className="text-[9px] text-slate-500 uppercase leading-none font-bold block">Session Notes</span>
               <p className="text-xs text-slate-300 leading-relaxed font-medium">{event.description}</p>
+            </div>
+
+            {/* Share event social widgets */}
+            <div className="border-t border-slate-800/40 pt-3 space-y-2">
+              <span className="text-[9px] text-slate-500 uppercase leading-none font-bold block">Share Squad</span>
+              <div className="flex items-center gap-2">
+                {/* Copy Link Button */}
+                <button
+                  onClick={handleCopyLink}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all font-semibold"
+                >
+                  <Link2 className="h-3.5 w-3.5" />
+                  <span>{copied ? 'Copied!' : 'Copy Link'}</span>
+                </button>
+
+                {/* WhatsApp Share Button */}
+                <a
+                  href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Hey! Join my ${event.activity_type} squad: "${event.title}" in ${event.locality} this weekend! Join here: ${typeof window !== 'undefined' ? window.location.origin : ''}/event/${event.id}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 hover:text-emerald-300 transition-all"
+                  title="Share on WhatsApp"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                </a>
+
+                {/* Twitter / X Share Button */}
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Just hosted a ${event.activity_type} squad in ${event.locality}! Join the roster: ${typeof window !== 'undefined' ? window.location.origin : ''}/event/${event.id}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white transition-all"
+                  title="Share on X"
+                >
+                  <XIcon className="h-4 w-4" />
+                </a>
+              </div>
             </div>
           </div>
 
