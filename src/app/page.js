@@ -440,9 +440,20 @@ export default function ExploreDashboard() {
                 <div className="space-y-3">
                   {/* Top info row */}
                   <div className="flex items-center justify-between">
-                    <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${activity.bgClass} ${activity.textClass}`}>
-                      {activity.icon} {event.activity_type}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${activity.bgClass} ${activity.textClass}`}>
+                        {activity.icon} {event.activity_type}
+                      </span>
+                      {event.status !== 'Open' && (
+                        <span className={`px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${
+                          event.status === 'Completed'
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                        }`}>
+                          {event.status}
+                        </span>
+                      )}
+                    </div>
                     <span className="text-slate-500 text-[11px] font-medium flex items-center gap-1">
                       <Calendar className="h-3 w-3" /> {new Date(event.event_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
                     </span>
