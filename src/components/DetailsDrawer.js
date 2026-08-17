@@ -675,19 +675,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
     }
   };
 
-  if (loading) {
-    return (
-      <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[450px] glass-premium p-6 border-l border-slate-800 shadow-2xl flex items-center justify-center">
-        <div className="text-center space-y-2">
-          <div className="h-6 w-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-slate-400">Fetching match profile...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!event) return null;
-  const activity = ACTIVITIES.find(a => a.value === event.activity_type) || ACTIVITIES[0];
+  const activity = event ? (ACTIVITIES.find(a => a.value === event.activity_type) || ACTIVITIES[0]) : ACTIVITIES[0];
 
   return (
     <>
@@ -702,8 +690,33 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
         transition={{ type: 'tween', duration: 0.3 }}
         className="fixed inset-y-0 right-0 z-50 w-full sm:w-[480px] glass-premium border-l border-slate-800/80 shadow-2xl flex flex-col justify-between overflow-hidden"
       >
-        {/* Drawer Header Event Banner */}
-        <div className="relative h-44 sm:h-48 w-full shrink-0 overflow-hidden bg-slate-950">
+        {loading ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4 relative">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-xl bg-slate-950/70 border border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-950 transition-all"
+            >
+              <X className="h-4 w-4 stroke-[2.5]" />
+            </button>
+            <div className="text-center space-y-2">
+              <div className="h-6 w-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto" />
+              <p className="text-xs text-slate-400 font-semibold animate-pulse">Fetching match profile...</p>
+            </div>
+          </div>
+        ) : !event ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-4 relative">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 rounded-xl bg-slate-950/70 border border-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-950 transition-all"
+            >
+              <X className="h-4 w-4 stroke-[2.5]" />
+            </button>
+            <p className="text-slate-400 text-xs font-semibold">Event Not Found</p>
+          </div>
+        ) : (
+          <>
+            {/* Drawer Header Event Banner */}
+            <div className="relative h-44 sm:h-48 w-full shrink-0 overflow-hidden bg-slate-950">
           <img
             src={event.cover_image_url || activity.fallbackImage}
             alt={event.title}
@@ -1001,6 +1014,8 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
             </div>
           )}
         </div>
+          </>
+        )}
       </motion.div>
 
       {/* UPI QR Payment Modal */}
