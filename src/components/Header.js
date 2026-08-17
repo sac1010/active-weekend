@@ -231,7 +231,7 @@ export default function Header() {
                 <span className="text-xs">
                   {profile.successful_hostings >= 3 
                     ? '🏆 Premium Host' 
-                    : `🏆 ${profile.successful_hostings}/3 Free Hosts`
+                    : `Standard Host (${profile.successful_hostings}/3 to Premium)`
                   }
                 </span>
               </div>
