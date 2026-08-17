@@ -67,14 +67,44 @@ export const ACTIVITIES = [
     fallbackImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
   },
   { 
-    name: "Riding", 
-    value: "Riding", 
+    name: "Cycling", 
+    value: "Cycling", 
     color: "teal",
     icon: "🚴",
     bgClass: "bg-teal-500/10",
     textClass: "text-teal-400",
-    borderClass: "border-riding",
+    borderClass: "border-cycling",
     fallbackImage: "https://images.unsplash.com/photo-1541614101331-1a5a3a194e92?w=800&q=80"
+  },
+  { 
+    name: "Motorcycling", 
+    value: "Motorcycling", 
+    color: "violet",
+    icon: "🏍️",
+    bgClass: "bg-violet-500/10",
+    textClass: "text-violet-400",
+    borderClass: "border-motorcycling",
+    fallbackImage: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=800&q=80"
+  },
+  { 
+    name: "Pubs & Bars", 
+    value: "Pubs & Bars", 
+    color: "amber",
+    icon: "🍻",
+    bgClass: "bg-amber-500/10",
+    textClass: "text-amber-400",
+    borderClass: "border-pubs",
+    fallbackImage: "https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80"
+  },
+  { 
+    name: "Cafes & Coffee", 
+    value: "Cafes & Coffee", 
+    color: "emerald",
+    icon: "☕",
+    bgClass: "bg-emerald-500/10",
+    textClass: "text-emerald-400",
+    borderClass: "border-cafes",
+    fallbackImage: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=80"
   },
   { 
     name: "Cricket", 

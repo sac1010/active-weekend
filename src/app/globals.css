@@ -106,13 +106,40 @@ body {
   box-shadow: 0 0 20px rgba(14, 165, 233, 0.25);
 }
 
-.border-riding {
+.border-cycling {
   border-color: rgba(20, 184, 166, 0.3);
   box-shadow: 0 0 15px rgba(20, 184, 166, 0.1);
 }
-.border-riding:hover {
+.border-cycling:hover {
   border-color: rgba(20, 184, 166, 0.7);
   box-shadow: 0 0 20px rgba(20, 184, 166, 0.25);
+}
+
+.border-motorcycling {
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.1);
+}
+.border-motorcycling:hover {
+  border-color: rgba(139, 92, 246, 0.7);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+}
+
+.border-pubs {
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.1);
+}
+.border-pubs:hover {
+  border-color: rgba(245, 158, 11, 0.7);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+}
+
+.border-cafes {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+}
+.border-cafes:hover {
+  border-color: rgba(16, 185, 129, 0.7);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
 }
 
 .border-cricket {
