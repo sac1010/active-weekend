@@ -10,6 +10,7 @@ import DetailsDrawer from '@/components/DetailsDrawer';
 import HostFormModal from '@/components/HostFormModal';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/lib/ToastContext';
+import Link from 'next/link';
 
 export default function ExploreDashboard() {
   const { showToast } = useToast();
@@ -207,31 +208,72 @@ export default function ExploreDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Dynamic Header Promo Banner */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-tr from-emerald-950/40 via-indigo-950/20 to-slate-950 p-6 border border-emerald-500/10 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4"
-      >
-        <div className="space-y-1.5 text-center md:text-left z-10">
-          <h2 className="text-xl md:text-2xl font-extrabold text-white flex items-center justify-center md:justify-start gap-2">
-            Namma Bengaluru, Play Active! <Sparkles className="h-5 w-5 text-emerald-400 animate-pulse" />
-          </h2>
-          <p className="text-slate-400 text-xs md:text-sm max-w-lg leading-relaxed">
-            Find local doubles partners, board gamers, and pickleball players in your layouts. Split court fees securely with zero platform overhead.
-          </p>
-        </div>
-        <button
-          onClick={() => currentUser ? setShowHostModal(true) : showToast('Please Sign-In via Google first to host events.', 'warning')}
-          className="relative px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-xl shadow-emerald-950/45 transition-all flex items-center gap-2 shrink-0 active:scale-95 z-10"
+      {/* Dynamic Header Promo Banner / SEO Marketing Landing Hero */}
+      {currentUser ? (
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative overflow-hidden rounded-2xl bg-gradient-to-tr from-emerald-950/40 via-indigo-950/20 to-slate-950 p-6 border border-emerald-500/10 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <Plus className="h-4.5 w-4.5 stroke-[3px]" />
-          <span>Host Weekend Game</span>
-        </button>
-        {/* Glow decoration */}
-        <div className="absolute -right-10 -bottom-10 h-32 w-32 rounded-full bg-emerald-500/10 blur-3xl" />
-        <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-3xl" />
-      </motion.div>
+          <div className="space-y-1.5 text-center md:text-left z-10">
+            <h2 className="text-xl md:text-2xl font-extrabold text-white flex items-center justify-center md:justify-start gap-2">
+              Namma Bengaluru, Play Active! <Sparkles className="h-5 w-5 text-emerald-400 animate-pulse" />
+            </h2>
+            <p className="text-slate-400 text-xs md:text-sm max-w-lg leading-relaxed">
+              Find local doubles partners, board gamers, and pickleball players in your layouts. Split court fees securely with zero platform overhead.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowHostModal(true)}
+            className="relative px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-xl shadow-emerald-950/45 transition-all flex items-center gap-2 shrink-0 active:scale-95 z-10"
+          >
+            <Plus className="h-4.5 w-4.5 stroke-[3px]" />
+            <span>Host Weekend Game</span>
+          </button>
+          {/* Glow decoration */}
+          <div className="absolute -right-10 -bottom-10 h-32 w-32 rounded-full bg-emerald-500/10 blur-3xl" />
+          <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-3xl" />
+        </motion.div>
+      ) : (
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-[#0a0f1d] to-[#05070e] p-8 md:p-12 border border-slate-800/80 shadow-2xl flex flex-col items-center text-center gap-6">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/5 via-transparent to-transparent opacity-60" />
+          <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-indigo-500/5 blur-3xl" />
+          <div className="absolute -right-12 -bottom-12 h-64 w-64 rounded-full bg-emerald-500/5 blur-3xl" />
+
+          <div className="space-y-3.5 max-w-3xl z-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider">
+              Namma Bengaluru Meetups
+            </span>
+            <h1 className="text-2xl md:text-5xl font-black text-white leading-tight tracking-tight">
+              Host & Join Local Meetups, Sports, and Hangouts in Bangalore
+            </h1>
+            <p className="text-slate-400 text-xs md:text-base leading-relaxed max-w-2xl mx-auto">
+              Discover active cycling crews, book court shares, join trekking expeditions, or meet new people at pubs and cafes. 100% Free, community-driven, and moderated by TrustPoints reliability scores.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3.5 z-10 w-full sm:w-auto">
+            <button
+              onClick={() => {
+                const signInBtn = document.querySelector('[aria-label="Sign-In with Google"]');
+                if (signInBtn) signInBtn.click();
+              }}
+              className="px-8 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-xl shadow-emerald-950/45 transition-all flex items-center justify-center gap-2 active:scale-95"
+            >
+              Get Started (Sign In)
+            </button>
+            <button
+              onClick={() => {
+                const searchInput = document.querySelector('input[placeholder*="Search Bangalore locality"]');
+                if (searchInput) searchInput.focus();
+              }}
+              className="px-8 py-3.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800/80 font-bold text-xs transition-all flex items-center justify-center gap-1.5 active:scale-95"
+            >
+              Browse Active Roster
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Navigation Tabs */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-1">
@@ -525,6 +567,69 @@ export default function ExploreDashboard() {
           />
         )}
       </AnimatePresence>
+
+      {/* Dynamic Link SEO Footer Grid */}
+      <footer className="border-t border-slate-900 bg-[#060a10] py-12 px-5 mt-16 rounded-2xl">
+        <div className="max-w-6xl mx-auto space-y-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs text-left">
+            <div className="space-y-3">
+              <h4 className="font-extrabold text-[10px] text-slate-400 uppercase tracking-widest">Active Localities</h4>
+              <ul className="space-y-2 text-slate-500">
+                {["HSR Layout", "Koramangala", "Indiranagar", "Bellandur", "Whitefield", "Jayanagar", "JP Nagar"].map((loc) => (
+                  <li key={loc}>
+                    <Link href={`/bangalore/badminton/${loc.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="hover:text-emerald-400 transition-colors">
+                      Badminton in {loc}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-3">
+              <h4 className="font-extrabold text-[10px] text-slate-400 uppercase tracking-widest">Weekend Meetups</h4>
+              <ul className="space-y-2 text-slate-500">
+                {["HSR Layout", "Koramangala", "Indiranagar", "Bellandur", "Whitefield", "Jayanagar", "JP Nagar"].map((loc) => (
+                  <li key={loc}>
+                    <Link href={`/bangalore/board-games/${loc.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="hover:text-emerald-400 transition-colors">
+                      Board Games in {loc}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-3">
+              <h4 className="font-extrabold text-[10px] text-slate-400 uppercase tracking-widest">Active Rides</h4>
+              <ul className="space-y-2 text-slate-500">
+                {["HSR Layout", "Koramangala", "Indiranagar", "Bellandur", "Whitefield", "Jayanagar", "JP Nagar"].map((loc) => (
+                  <li key={loc}>
+                    <Link href={`/bangalore/cycling/${loc.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="hover:text-emerald-400 transition-colors">
+                      Cycling in {loc}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-3">
+              <h4 className="font-extrabold text-[10px] text-slate-400 uppercase tracking-widest">Pubs & Coffee</h4>
+              <ul className="space-y-2 text-slate-500">
+                {["HSR Layout", "Koramangala", "Indiranagar", "Bellandur", "Whitefield", "Jayanagar", "JP Nagar"].map((loc) => (
+                  <li key={loc}>
+                    <Link href={`/bangalore/pubs-&-bars/${loc.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="hover:text-emerald-400 transition-colors">
+                      Pubs & Bars in {loc}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-slate-900/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10.5px] text-slate-600">
+            <p>© 2026 ActiveWeekend. Namma Bengaluru's premier weekend coordinator.</p>
+            <div className="flex gap-4">
+              <Link href="/blog" className="hover:text-slate-400 transition-colors">Blog</Link>
+              <Link href="/admin" className="hover:text-slate-400 transition-colors">Ops Console</Link>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
