@@ -115,7 +115,7 @@ export default async function EventDetailPage({ params }) {
     },
     "offers": {
       "@type": "Offer",
-      "price": event.cost_value.toString(),
+      "price": "0",
       "priceCurrency": "INR",
       "availability": event.bookings?.length < event.max_slots ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
     }
@@ -155,10 +155,16 @@ export default async function EventDetailPage({ params }) {
             </h1>
           </div>
           <div className="text-right shrink-0">
-            <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Price</p>
-            <p className="text-base font-extrabold text-white">
-              {event.cost_type === 'Free' ? 'Free' : `₹${event.cost_value}`}
-            </p>
+            <p className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Status</p>
+            <span className={`inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-md border uppercase tracking-wider mt-1 ${
+              event.status === 'Open'
+                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/10'
+                : event.status === 'Completed'
+                ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/10'
+                : 'bg-slate-900 text-slate-400 border-slate-800'
+            }`}>
+              {event.status}
+            </span>
           </div>
         </div>
 

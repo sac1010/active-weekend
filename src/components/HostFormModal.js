@@ -9,8 +9,6 @@ import { useToast } from '@/lib/ToastContext';
 
 export default function HostFormModal({ currentUser, onClose, onActionComplete }) {
   const { showToast } = useToast();
-  const [hostProfile, setHostProfile] = useState(null);
-  const [loadingProfile, setLoadingProfile] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   // Form states
@@ -30,36 +28,6 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
   const [description, setDescription] = useState('');
 
   const isMock = (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true) || (currentUser?.id === '00000000-0000-0000-0000-000000000000');
-
-  // Fetch host profile details
-  useEffect(() => {
-    const fetchHostProfile = async () => {
-      if (!currentUser) return;
-      if (isMock) {
-        setHostProfile({
-          successful_hostings: 1
-        });
-        setLoadingProfile(false);
-        return;
-      }
-
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('successful_hostings')
-          .eq('id', currentUser.id)
-          .single();
-
-        if (data) setHostProfile(data);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoadingProfile(false);
-      }
-    };
-
-    fetchHostProfile();
-  }, [currentUser]);
 
   const formatTime12Hour = (timeStr) => {
     if (!timeStr) return '';
@@ -126,8 +94,8 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
       event_time,
       skill_level: skillLevel,
       max_slots: Number(maxSlots),
-      cost_type: costType,
-      cost_value: costType === 'Free' ? 0 : Number(costValue),
+      cost_type: 'Free',
+      cost_value: 0,
       description,
       status: 'Open',
       cover_image_url: uploadedImageUrl
@@ -340,75 +308,22 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
               </div>
             </div>
 
-            {/* Roster Size & Cost Type & Pricing */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Max Squad Size</label>
-                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
-                  <Users className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
-                  <input
-                    type="number"
-                    required
-                    min={2}
-                    placeholder="4"
-                    value={maxSlots}
-                    onChange={(e) => setMaxSlots(e.target.value)}
-                    className="bg-transparent text-slate-200 focus:outline-none w-full"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Cost Type</label>
-                <select
-                  value={costType}
-                  onChange={(e) => {
-                    setCostType(e.target.value);
-                    if (e.target.value === 'Free') setCostValue(0);
-                  }}
-                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-slate-700"
-                >
-                  <option value="Free">Free Session</option>
-                  <option value="Split">Split Court Cost</option>
-                  <option 
-                    value="Paid" 
-                    disabled={hostProfile?.successful_hostings < 3}
-                  >
-                    Paid Ticket {hostProfile?.successful_hostings < 3 && '🔒'}
-                  </option>
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Price per Ticket (₹)</label>
-                <div className={`flex items-center border rounded-xl px-3 py-2 transition-all ${
-                  costType === 'Free'
-                    ? 'bg-slate-950/80 border-slate-900/60 text-slate-600'
-                    : 'bg-slate-950/40 border-slate-800 text-slate-200'
-                }`}>
-                  <DollarSign className="h-4 w-4 text-slate-500 mr-1 shrink-0" />
-                  <input
-                    type="number"
-                    disabled={costType === 'Free'}
-                    min={0}
-                    placeholder="150"
-                    value={costValue}
-                    onChange={(e) => setCostValue(e.target.value)}
-                    className="bg-transparent focus:outline-none w-full disabled:text-slate-600"
-                  />
-                </div>
+            {/* Roster Size */}
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Max Squad Size</label>
+              <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
+                <Users className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
+                <input
+                  type="number"
+                  required
+                  min={2}
+                  placeholder="4"
+                  value={maxSlots}
+                  onChange={(e) => setMaxSlots(e.target.value)}
+                  className="bg-transparent text-slate-200 focus:outline-none w-full"
+                />
               </div>
             </div>
-
-            {/* Paid hosting requirement warning badge */}
-            {hostProfile?.successful_hostings < 3 && (
-              <div className="flex items-start gap-2 p-2.5 rounded-xl border border-orange-500/20 bg-orange-950/10 text-orange-400">
-                <Lock className="h-4 w-4 mt-0.5 shrink-0" />
-                <p className="text-[10.5px] leading-relaxed">
-                  *"Paid Event" option is locked. Complete **{3 - hostProfile.successful_hostings} more successful free matches** to unlock paid ticketing permissions.*
-                </p>
-              </div>
-            )}
 
             {/* Optional Cover Image Banner */}
             <div className="space-y-1">

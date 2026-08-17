@@ -95,7 +95,7 @@ export default async function CategoryLocalityPage({ params }) {
     },
     "offers": {
       "@type": "Offer",
-      "price": event.cost_value.toString(),
+      "price": "0",
       "priceCurrency": "INR",
       "availability": event.bookings?.length < event.max_slots ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
     }
@@ -186,8 +186,8 @@ export default async function CategoryLocalityPage({ params }) {
                 <span className="text-slate-500 flex items-center gap-1">
                   <Users className="h-3.5 w-3.5" /> {event.bookings?.length || 1} / {event.max_slots} filled
                 </span>
-                <span className="text-white font-extrabold">
-                  {event.cost_type === 'Free' ? 'Free' : `₹${event.cost_value}`}
+                <span className="text-emerald-400 font-bold uppercase text-[9px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                  Free
                 </span>
               </div>
             </Link>

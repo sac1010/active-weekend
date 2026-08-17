@@ -33,11 +33,8 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [showCompletionForm, setShowCompletionForm] = useState(false);
 
-  // UPI payment state
-  const [showUpiModal, setShowUpiModal] = useState(false);
-  const [showPaymentChoice, setShowPaymentChoice] = useState(false);
-  const [upiUtr, setUpiUtr] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -289,184 +286,6 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
     }
   };
 
-  // Join Paid Event via UPI UTR
-  const handleUpiSubmit = async (e) => {
-    e.preventDefault();
-    if (!upiUtr.trim() || upiUtr.length !== 12 || isNaN(upiUtr)) {
-      showToast('Please enter a valid 12-digit numeric UPI reference (UTR) code.', 'error');
-      return;
-    }
-    setSubmittingAction(true);
-
-    if (isMock) {
-      setTimeout(() => {
-        setIsJoined(true);
-        setShowUpiModal(false);
-        setUpiUtr('');
-        if (onActionComplete) onActionComplete();
-        fetchDetails();
-        setSubmittingAction(false);
-      }, 500);
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('bookings')
-        .insert({
-          event_id: eventId,
-          user_id: currentUser.id,
-          payment_status: 'Pending',
-          payment_ref: upiUtr
-        });
-
-      if (error) throw error;
-
-      // Notify host to verify UTR
-      await supabase.from('notifications').insert({
-        user_id: event.host_id,
-        title: 'Payment Verification Needed 💰',
-        message: `A guest has joined your match "${event.title}" via UPI. Please verify credit of ₹${event.cost_value} with UTR: ${upiUtr}.`
-      });
-
-      setShowUpiModal(false);
-      setUpiUtr('');
-      showToast('UTR submitted! Your booking is pending host confirmation.', 'success');
-      if (onActionComplete) onActionComplete();
-      fetchDetails();
-    } catch (err) {
-      showToast('This UTR has already been submitted. Please check the transaction record and enter a unique reference.', 'error');
-    } finally {
-      setSubmittingAction(false);
-    }
-  };
-
-  // Dynamically load Razorpay SDK
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
-
-  // Process payment using Razorpay
-  const handleRazorpayPayment = async () => {
-    setSubmittingAction(true);
-    try {
-      const scriptLoaded = await loadRazorpayScript();
-      if (!scriptLoaded) {
-        showToast('Failed to load Razorpay SDK. Please check your internet connection.', 'error');
-        return;
-      }
-
-      // 1. Create a pending booking record to link order reference
-      let bookingId;
-      if (isMock) {
-        bookingId = `mock_bk_${Date.now()}`;
-      } else {
-        const { data: newBooking, error: bookingError } = await supabase
-          .from('bookings')
-          .insert({
-            event_id: eventId,
-            user_id: currentUser.id,
-            payment_status: 'Pending',
-            payment_ref: 'Razorpay_Initiating'
-          })
-          .select('id')
-          .single();
-        
-        if (bookingError) throw bookingError;
-        bookingId = newBooking.id;
-      }
-
-      // 2. Register Razorpay Order on server
-      const orderRes = await fetch('/api/payments/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: event.cost_value, bookingId })
-      });
-      const orderData = await orderRes.json();
-      if (!orderData.success) throw new Error(orderData.error);
-
-      // 3. Launch Razorpay modal or run simulation fallback
-      if (orderData.isSimulated) {
-        // Simulated signature verification
-        const verifyRes = await fetch('/api/payments/verify-signature', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            razorpayOrderId: orderData.orderId,
-            razorpayPaymentId: 'sim_pay_987654',
-            razorpaySignature: 'sim_sig_987654',
-            bookingId,
-            userEmail: currentUser.email
-          })
-        });
-        const verifyData = await verifyRes.json();
-        if (verifyData.success) {
-          showToast('Simulated Razorpay Checkout Successful! (Test Mode)', 'success');
-          setIsJoined(true);
-          setShowPaymentChoice(false);
-          if (onActionComplete) onActionComplete();
-          fetchDetails();
-        } else {
-          throw new Error(verifyData.error);
-        }
-      } else {
-        // Launch real checkout modal
-        const options = {
-          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_your_key_id',
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: 'ActiveWeekend Bangalore',
-          description: `Roster spot for ${event.title}`,
-          order_id: orderData.orderId,
-          handler: async function (response) {
-            setSubmittingAction(true);
-            const verifyRes = await fetch('/api/payments/verify-signature', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpayOrderId: response.razorpay_order_id,
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpaySignature: response.razorpay_signature,
-                bookingId,
-                userEmail: currentUser.email
-              })
-            });
-            const verifyData = await verifyRes.json();
-            setSubmittingAction(false);
-            if (verifyData.success) {
-              showToast('Payment verified and slot confirmed! 🎉', 'success');
-              setIsJoined(true);
-              setShowPaymentChoice(false);
-              if (onActionComplete) onActionComplete();
-              fetchDetails();
-            } else {
-              showToast('Payment verification failed: ' + verifyData.error, 'error');
-            }
-          },
-          prefill: {
-            email: currentUser.email
-          },
-          theme: {
-            color: '#10b981'
-          }
-        };
-        const rzp = new window.Razorpay(options);
-        rzp.open();
-      }
-    } catch (err) {
-      console.error(err);
-      showToast(err.message || 'Error processing payment.', 'error');
-    } finally {
-      setSubmittingAction(false);
-    }
-  };
-
   // Leave Event Roster (Safeguard checks)
   const handleLeaveEvent = async () => {
     if (!currentUser || !bookingRecord) return;
@@ -478,11 +297,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
 
     let warningText = 'Are you sure you want to leave this match?';
     if (hoursRemaining < 6) {
-      if (event.cost_type === 'Free') {
-        warningText = '🚨 WARNING: This event starts in less than 6 hours. Leaving now will penalize you 30 TrustPoints. Proceed?';
-      } else {
-        warningText = '🚨 WARNING: This event starts in less than 6 hours. Leaving now will forfeit 50% of your court share payment. Proceed?';
-      }
+      warningText = '🚨 WARNING: This event starts in less than 6 hours. Leaving now will penalize you 30 TrustPoints. Proceed?';
     }
 
     if (!window.confirm(warningText)) return;
@@ -510,35 +325,34 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
 
       // 2. Apply penalties if less than 6 hours
       if (hoursRemaining < 6) {
-        if (event.cost_type === 'Free') {
-          // Deduct 30 TrustPoints (clamped at 0)
-          const currentPoints = profile?.trust_points || 150;
-          const newPoints = Math.max(0, currentPoints - 30);
-          
-          await supabase
-            .from('profiles')
-            .update({ trust_points: newPoints })
-            .eq('id', currentUser.id);
+        // Fetch host profile details to check current trust points
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('trust_points')
+          .eq('id', currentUser.id)
+          .single();
 
-          await supabase.from('trust_points_ledger').insert({
-            user_id: currentUser.id,
-            amount: -30,
-            transaction_type: 'Penalty',
-            event_id: eventId
-          });
+        // Deduct 30 TrustPoints (clamped at 0)
+        const currentPoints = profile?.trust_points || 150;
+        const newPoints = Math.max(0, currentPoints - 30);
+        
+        await supabase
+          .from('profiles')
+          .update({ trust_points: newPoints })
+          .eq('id', currentUser.id);
 
-          await supabase.from('notifications').insert({
-            user_id: currentUser.id,
-            title: 'TrustPoints Penalized 🤝',
-            message: `You left the match "${event.title}" under the 6-hour cancellation limit. 30 TrustPoints were deducted.`
-          });
-        } else {
-          // Refund 50% / keep 50% in database record status
-          await supabase
-            .from('bookings')
-            .update({ payment_status: 'Refunded', payment_ref: 'Forfeit_50_Percent' })
-            .eq('id', bookingRecord.id);
-        }
+        await supabase.from('trust_points_ledger').insert({
+          user_id: currentUser.id,
+          amount: -30,
+          transaction_type: 'Penalty',
+          event_id: eventId
+        });
+
+        await supabase.from('notifications').insert({
+          user_id: currentUser.id,
+          title: 'TrustPoints Penalized 🤝',
+          message: `You left the match "${event.title}" under the 6-hour cancellation limit. 30 TrustPoints were deducted.`
+        });
       }
 
       setIsJoined(false);
@@ -547,36 +361,6 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
       fetchDetails();
     } catch (e) {
       showToast(e.message || 'Failed to leave roster.', 'error');
-    } finally {
-      setSubmittingAction(false);
-    }
-  };
-
-  // Host: Confirm guest UTR payment
-  const handleConfirmPayment = async (bookingId, guestId) => {
-    if (isMock) {
-      showToast('Mock payment confirmed!', 'success');
-      return;
-    }
-    setSubmittingAction(true);
-    try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ payment_status: 'Escrow_Held' })
-        .eq('id', bookingId);
-
-      if (error) throw error;
-
-      // Notify guest
-      await supabase.from('notifications').insert({
-        user_id: guestId,
-        title: 'Booking Confirmed! 🏸',
-        message: `Your payment was verified by the host for "${event.title}". You are now a confirmed squad member!`
-      });
-
-      fetchDetails();
-    } catch (e) {
-      showToast(e.message, 'error');
     } finally {
       setSubmittingAction(false);
     }
@@ -609,6 +393,45 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
       fetchDetails();
     } catch (e) {
       showToast(e.message, 'error');
+    } finally {
+      setSubmittingAction(false);
+    }
+  };
+
+  // Host: Cancel match event
+  const handleCancelEvent = async () => {
+    setSubmittingAction(true);
+    if (isMock) {
+      setTimeout(() => {
+        showToast('Match event cancelled successfully.', 'success');
+        if (onActionComplete) onActionComplete();
+        onClose();
+        setSubmittingAction(false);
+      }, 500);
+      return;
+    }
+    try {
+      // 1. Cancel the event
+      const { error: eventError } = await supabase
+        .from('events')
+        .update({ status: 'Cancelled' })
+        .eq('id', eventId);
+
+      if (eventError) throw eventError;
+
+      // 2. Mark bookings as Refunded (audit-logged cancellation)
+      const { error: bookingsError } = await supabase
+        .from('bookings')
+        .update({ payment_status: 'Refunded' })
+        .eq('event_id', eventId);
+
+      if (bookingsError) throw bookingsError;
+
+      showToast('Match event cancelled successfully.', 'success');
+      if (onActionComplete) onActionComplete();
+      onClose();
+    } catch (e) {
+      showToast(e.message || 'Failed to cancel event.', 'error');
     } finally {
       setSubmittingAction(false);
     }
@@ -875,32 +698,17 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
                     />
                     <div>
                       <p className="text-xs font-bold text-slate-200">{booking.user?.username || 'Player'}</p>
-                      <p className="text-[9px] text-slate-500 mt-0.5">
-                        Status: <span className={booking.payment_status === 'Pending' ? 'text-orange-400 font-bold' : 'text-emerald-400'}>
-                          {booking.payment_status}
-                        </span>
-                      </p>
                     </div>
                   </div>
 
-                  {/* Host verification buttons (Pending UTR validation) */}
-                  {event.host_id === currentUser?.id && booking.payment_status === 'Pending' && (
-                    <div className="flex gap-1.5 shrink-0">
-                      <button
-                        onClick={() => handleConfirmPayment(booking.id, booking.user_id)}
-                        disabled={submittingAction}
-                        className="px-2.5 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-[10px] transition-colors"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        onClick={() => handleRejectBooking(booking.id, booking.user_id)}
-                        disabled={submittingAction}
-                        className="px-2.5 py-1.5 rounded-lg bg-rose-500/15 hover:bg-rose-500/30 text-rose-400 font-semibold border border-rose-500/20 text-[10px] transition-colors"
-                      >
-                        Reject
-                      </button>
-                    </div>
+                  {event.host_id === currentUser?.id && (
+                    <button
+                      onClick={() => handleRejectBooking(booking.id, booking.user_id)}
+                      disabled={submittingAction}
+                      className="px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 font-semibold border border-rose-500/10 text-[10px] transition-colors shrink-0"
+                    >
+                      Kick
+                    </button>
                   )}
                 </div>
               ))}
@@ -920,9 +728,35 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
                     >
                       Complete Session & Disburse TrustPoints
                     </button>
-                    <p className="text-[10px] text-slate-500 text-center">
-                      Requires uploading a verified group selfie. Releases escrow funds to your account.
+                    <p className="text-[10px] text-slate-500 text-center mb-1">
+                      Requires uploading a verified group selfie to award successful hostings and points.
                     </p>
+
+                    {/* Inline Host Cancellation */}
+                    {!showCancelConfirm ? (
+                      <button
+                        onClick={() => setShowCancelConfirm(true)}
+                        className="w-full py-2 rounded-xl bg-slate-950/60 hover:bg-slate-900 border border-slate-800 text-slate-400 hover:text-rose-400 font-semibold text-[11px] transition-colors"
+                      >
+                        Cancel Squad Event
+                      </button>
+                    ) : (
+                      <div className="flex gap-2 animate-fade-in">
+                        <button
+                          onClick={handleCancelEvent}
+                          disabled={submittingAction}
+                          className="flex-1 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-[11px] transition-colors"
+                        >
+                          Confirm Cancel Match
+                        </button>
+                        <button
+                          onClick={() => setShowCancelConfirm(false)}
+                          className="flex-1 py-2 rounded-xl bg-slate-950/80 hover:bg-slate-900 border border-slate-800 text-slate-400 font-semibold text-[11px] transition-colors"
+                        >
+                          Keep Match
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )
               ) : isJoined ? (
@@ -937,29 +771,13 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
               ) : (
                 /* Guest joins match */
                 event.bookings?.length < event.max_slots && event.status === 'Open' && (
-                  event.cost_type === 'Free' ? (
-                    <button
-                      onClick={handleJoinFree}
-                      disabled={submittingAction}
-                      className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all active:scale-98"
-                    >
-                      Confirm & Join Squad
-                    </button>
-                  ) : (
-                    /* Paid join trigger */
-                    <button
-                      onClick={() => {
-                        if (!currentUser) {
-                          showToast('Please Sign-In via Google first to join squads.', 'warning');
-                          return;
-                        }
-                        setShowPaymentChoice(true);
-                      }}
-                      className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all active:scale-98"
-                    >
-                      Join (Pay ₹{event.cost_value})
-                    </button>
-                  )
+                  <button
+                    onClick={handleJoinFree}
+                    disabled={submittingAction}
+                    className="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all active:scale-98"
+                  >
+                    Confirm & Join Squad
+                  </button>
                 )
               )}
             </div>
@@ -1018,124 +836,6 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
         )}
       </motion.div>
 
-      {/* UPI QR Payment Modal */}
-      <AnimatePresence>
-        {showUpiModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setShowUpiModal(false)} />
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-md rounded-2xl glass-premium p-6 border border-slate-800 shadow-2xl z-50 text-center space-y-4"
-            >
-              <h3 className="font-bold text-base text-white">Scan QR to UPI Host</h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Scan the QR code below using your GPay/PhonePe/Paytm app to transfer court share of **₹{event.cost_value}** to host's UPI handle.
-              </p>
-              
-              {/* UPI QR Code image generator */}
-              <div className="flex justify-center p-2 rounded-xl bg-white w-48 h-48 mx-auto">
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
-                    `upi://pay?pa=activeweekend@okaxis&pn=ActiveWeekend&am=${event.cost_value}.00&tn=Join_Event_${event.id}&cu=INR`
-                  )}`}
-                  alt="UPI QR Code"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-
-              <form onSubmit={handleUpiSubmit} className="space-y-3.5 text-left pt-2">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                    Enter 12-Digit UPI UTR / Transaction Ref
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={12}
-                    placeholder="e.g. 628490184719"
-                    value={upiUtr}
-                    onChange={(e) => setUpiUtr(e.target.value)}
-                    className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-slate-700 text-slate-200"
-                  />
-                  <span className="text-[10px] text-slate-500 block">
-                    Find the 12-digit UTR under the transaction details in your UPI app.
-                  </span>
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    type="submit"
-                    disabled={submittingAction}
-                    className="flex-1 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all"
-                  >
-                    {submittingAction ? 'Verifying...' : 'Submit UTR Code'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowUpiModal(false)}
-                    className="px-4 py-2.5 rounded-xl bg-slate-900 text-slate-400 hover:text-white border border-slate-800 text-xs transition-all"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Payment Choice Selection Modal */}
-      <AnimatePresence>
-        {showPaymentChoice && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setShowPaymentChoice(false)} />
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-md rounded-2xl glass-premium p-6 border border-slate-800 shadow-2xl z-50 text-center space-y-4"
-            >
-              <h3 className="font-bold text-base text-white">Choose Payment Method</h3>
-              <p className="text-slate-400 text-xs leading-relaxed">
-                Choose how you want to pay court share of **₹{event.cost_value}** to join the squad roster.
-              </p>
-
-              <div className="space-y-3 pt-2">
-                <button
-                  onClick={() => {
-                    setShowPaymentChoice(false);
-                    setShowUpiModal(true);
-                  }}
-                  className="w-full py-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 hover:text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all active:scale-98"
-                >
-                  <span className="text-base">🤝</span>
-                  <span>Pay via direct UPI QR (Zero Fees)</span>
-                </button>
-
-                <button
-                  onClick={handleRazorpayPayment}
-                  disabled={submittingAction}
-                  className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-500 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 shadow-lg transition-all active:scale-98"
-                >
-                  <span className="text-base">💳</span>
-                  <span>Pay via Card/Netbanking (Platform Escrow)</span>
-                </button>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  onClick={() => setShowPaymentChoice(false)}
-                  className="text-slate-500 hover:text-slate-300 text-xs font-semibold underline underline-offset-4"
-                >
-                  Cancel
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
       <AnimatePresence>
         {showCompletionForm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

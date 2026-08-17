@@ -23,7 +23,6 @@ export default function ExploreDashboard() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchLocality, setSearchLocality] = useState('');
   const [showLocalitySuggestions, setShowLocalitySuggestions] = useState(false);
-  const [selectedCostType, setSelectedCostType] = useState('All');
   const [selectedSkillLevel, setSelectedSkillLevel] = useState('All');
   const [selectedDate, setSelectedDate] = useState('');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -142,7 +141,6 @@ export default function ExploreDashboard() {
   const filteredEvents = events.filter(event => {
     if (selectedCategory !== 'All' && event.activity_type !== selectedCategory) return false;
     if (searchLocality && !event.locality.toLowerCase().includes(searchLocality.toLowerCase())) return false;
-    if (selectedCostType !== 'All' && event.cost_type !== selectedCostType) return false;
     if (selectedSkillLevel !== 'All' && event.skill_level !== selectedSkillLevel) return false;
     if (selectedDate && event.event_date !== selectedDate) return false;
     return true;
@@ -161,7 +159,6 @@ export default function ExploreDashboard() {
   const resetFilters = () => {
     setSelectedCategory('All');
     setSearchLocality('');
-    setSelectedCostType('All');
     setSelectedSkillLevel('All');
     setSelectedDate('');
   };
@@ -359,21 +356,7 @@ export default function ExploreDashboard() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-800/80">
-                {/* Cost Type Selection */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Cost Type</label>
-                  <select
-                    value={selectedCostType}
-                    onChange={(e) => setSelectedCostType(e.target.value)}
-                    className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-slate-700"
-                  >
-                    <option value="All">All Costs</option>
-                    <option value="Free">Free</option>
-                    <option value="Split">Split Court Cost</option>
-                    <option value="Paid">Paid Ticket</option>
-                  </select>
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-800/80">
 
                 {/* Skill Level Selection */}
                 <div className="space-y-1.5">
@@ -498,27 +481,20 @@ export default function ExploreDashboard() {
                     {renderRosterCircles(event)}
                   </div>
 
-                  {/* Pricing / Details tag */}
+                  {/* Status / Action tag */}
                   <div className="text-right space-y-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
-                      Fee Details
+                      Status
                     </span>
-                    <div className="flex items-center gap-1.5 justify-end">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
-                        event.cost_type === 'Free' 
-                          ? 'bg-slate-900 text-slate-300 border border-slate-800' 
-                          : event.cost_type === 'Split'
-                          ? 'bg-orange-500/10 text-orange-400 border border-orange-500/10'
-                          : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10'
-                      }`}>
-                        {event.cost_type}
-                      </span>
-                      {event.cost_type !== 'Free' && (
-                        <span className="text-sm font-extrabold text-white">
-                          ₹{event.cost_value}
-                        </span>
-                      )}
-                    </div>
+                    <span className={`inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-md border uppercase tracking-wider ${
+                      event.status === 'Open'
+                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/10'
+                        : event.status === 'Completed'
+                        ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/10'
+                        : 'bg-slate-900 text-slate-400 border-slate-800'
+                    }`}>
+                      {event.status}
+                    </span>
                   </div>
                 </div>
               </motion.div>
