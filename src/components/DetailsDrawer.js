@@ -41,7 +41,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
 
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
-  const isMock = (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true) || (currentUser?.id === '00000000-0000-0000-0000-000000000000') || (eventId?.startsWith('mock')) || (eventId?.startsWith('e'));
+  const isMock = (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true) || (currentUser?.id === '00000000-0000-0000-0000-000000000000') || (eventId?.startsWith('mock')) || (eventId?.startsWith('e') && eventId.length < 5);
 
   // Auto-scroll chat
   useEffect(() => {

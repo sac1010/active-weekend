@@ -12,7 +12,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const id = resolvedParams.id;
-  const isMock = supabaseUrl.includes('placeholder') || id.startsWith('e') || id.startsWith('mock');
+  const isMock = supabaseUrl.includes('placeholder') || id.startsWith('mock') || (id.startsWith('e') && id.length < 5);
 
   let title = 'Active Match Squad | ActiveWeekend';
   let description = 'Join this active weekend match in Bangalore.';
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }) {
 export default async function EventDetailPage({ params }) {
   const resolvedParams = await params;
   const id = resolvedParams.id;
-  const isMock = supabaseUrl.includes('placeholder') || id.startsWith('e') || id.startsWith('mock');
+  const isMock = supabaseUrl.includes('placeholder') || id.startsWith('mock') || (id.startsWith('e') && id.length < 5);
 
   let event = null;
 
