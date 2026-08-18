@@ -217,10 +217,10 @@ export default function ExploreDashboard() {
         >
           <div className="space-y-1.5 text-center md:text-left z-10">
             <h2 className="text-xl md:text-2xl font-extrabold text-white flex items-center justify-center md:justify-start gap-2">
-              Namma Bengaluru, Play Active! <Sparkles className="h-5 w-5 text-emerald-400 animate-pulse" />
+              Namma Bengaluru, Connect Active! <Sparkles className="h-5 w-5 text-emerald-400 animate-pulse" />
             </h2>
             <p className="text-slate-400 text-xs md:text-sm max-w-lg leading-relaxed">
-              Find local doubles partners, board gamers, and pickleball players in your layouts. Split court fees securely with zero platform overhead.
+              Find local group rides, board game tables, sports partners, and cafe socials in your layout. 100% Free, community-driven, and moderated by TrustPoints.
             </p>
           </div>
           <button
