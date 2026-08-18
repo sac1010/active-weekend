@@ -14,12 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "ActiveWeekend Bangalore | Sports & Hobby Squad Matchmaking",
-  description: "Join premium local sports, fitness, and hobby squads in HSR Layout, Indiranagar, and Koramangala. Meet sports partners, split court fees, and play this weekend.",
-  keywords: ["badminton partners Bangalore", "pickleball partners Bangalore", "board games Bangalore", "trekking groups Bangalore", "active weekend Bangalore"],
+  title: "ActiveWeekend Bangalore | Local Meetups, Sports, Rides & Socials",
+  description: "Join premium local meetups, sports clubs, group rides, and social squads in Bangalore. Find play partners, coordinate cycling trips, or meet new people at local pubs and cafes.",
+  keywords: ["Bangalore meetups", "weekend activities Bangalore", "sports groups Bangalore", "cycling clubs Bangalore", "pub crawls Bangalore", "board games meetups Bangalore", "active weekend Bangalore"],
   openGraph: {
-    title: "ActiveWeekend Bangalore",
-    description: "Join local sports, fitness, and hobby squads in Bangalore.",
+    title: "ActiveWeekend Bangalore | Local Meetups, Sports & Socials",
+    description: "Join premium local meetups, sports clubs, group rides, and social squads in Bangalore.",
     type: "website"
   }
 };

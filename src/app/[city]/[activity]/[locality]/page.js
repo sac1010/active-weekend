@@ -30,9 +30,9 @@ export async function generateMetadata({ params }) {
   const locality = slugToLabel(resolvedParams.locality);
 
   return {
-    title: `Active ${activity} Squads in ${locality}, ${city} | ActiveWeekend`,
-    description: `Find local players and join upcoming ${activity} matches in ${locality}, ${city}. Split court costs, schedule games, and play this weekend.`,
-    keywords: [`${activity} partners ${locality}`, `${activity} near ${locality}`, `meet ${activity} players ${locality}`]
+    title: `Active ${activity} Groups in ${locality}, ${city} | ActiveWeekend`,
+    description: `Find active local groups and join upcoming ${activity} meetups in ${locality}, ${city}. Connect with friendly hosts, register for free, and meet new people this weekend.`,
+    keywords: [`${activity} groups ${locality}`, `${activity} meetups ${locality}`, `active ${activity} ${locality}`]
   };
 }
 
