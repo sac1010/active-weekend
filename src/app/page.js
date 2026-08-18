@@ -574,51 +574,98 @@ export default function ExploreDashboard() {
           <div className="space-y-10">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs text-left">
               <div className="space-y-3">
-                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Active Localities</h4>
-                <ul className="space-y-2 text-slate-450">
-                  {["HSR Layout", "Koramangala", "Indiranagar", "Bellandur", "Whitefield", "Jayanagar", "JP Nagar"].map((loc) => (
-                    <li key={loc}>
-                      <Link href={`/bangalore/badminton/${loc.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="text-slate-400 hover:text-emerald-400 transition-colors">
-                        Badminton in {loc}
-                      </Link>
-                    </li>
-                  ))}
+                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Explore Activities</h4>
+                <ul className="space-y-2 text-slate-400">
+                  <li>
+                    <Link href="/bangalore/badminton/hsr-layout" className="hover:text-emerald-400 transition-colors">
+                      Badminton Matches
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/pickleball/bellandur" className="hover:text-emerald-400 transition-colors">
+                      Pickleball Court Shares
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/board-games/koramangala" className="hover:text-emerald-400 transition-colors">
+                      Board Game meetups
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/trekking/hebbal" className="hover:text-emerald-400 transition-colors">
+                      Weekend Trekking groups
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div className="space-y-3">
-                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Weekend Meetups</h4>
-                <ul className="space-y-2 text-slate-450">
-                  {["HSR Layout", "Koramangala", "Indiranagar", "Bellandur", "Whitefield", "Jayanagar", "JP Nagar"].map((loc) => (
-                    <li key={loc}>
-                      <Link href={`/bangalore/board-games/${loc.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="text-slate-400 hover:text-emerald-400 transition-colors">
-                        Board Games in {loc}
-                      </Link>
-                    </li>
-                  ))}
+                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Rides & Socials</h4>
+                <ul className="space-y-2 text-slate-400">
+                  <li>
+                    <Link href="/bangalore/cycling/indiranagar" className="hover:text-emerald-400 transition-colors">
+                      Cycling Crews
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/motorcycling/hsr-layout" className="hover:text-emerald-400 transition-colors">
+                      Motorcycle Cruises
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/pubs-&-bars/indiranagar" className="hover:text-emerald-400 transition-colors">
+                      Pub & Brewery hangouts
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/cafes-&-coffee/koramangala" className="hover:text-emerald-400 transition-colors">
+                      Cafe & Coffee meetups
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div className="space-y-3">
-                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Active Rides</h4>
-                <ul className="space-y-2 text-slate-450">
-                  {["HSR Layout", "Koramangala", "Indiranagar", "Bellandur", "Whitefield", "Jayanagar", "JP Nagar"].map((loc) => (
-                    <li key={loc}>
-                      <Link href={`/bangalore/cycling/${loc.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="text-slate-400 hover:text-emerald-400 transition-colors">
-                        Cycling in {loc}
-                      </Link>
-                    </li>
-                  ))}
+                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Popular Layouts</h4>
+                <ul className="space-y-2 text-slate-400">
+                  <li>
+                    <Link href="/bangalore/badminton/hsr-layout" className="hover:text-emerald-400 transition-colors">
+                      HSR Layout Meetups
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/pubs-&-bars/indiranagar" className="hover:text-emerald-400 transition-colors">
+                      Indiranagar Events
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/board-games/koramangala" className="hover:text-emerald-400 transition-colors">
+                      Koramangala Socials
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/bangalore/pickleball/bellandur" className="hover:text-emerald-400 transition-colors">
+                      Bellandur Play Groups
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div className="space-y-3">
-                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Pubs & Coffee</h4>
-                <ul className="space-y-2 text-slate-450">
-                  {["HSR Layout", "Koramangala", "Indiranagar", "Bellandur", "Whitefield", "Jayanagar", "JP Nagar"].map((loc) => (
-                    <li key={loc}>
-                      <Link href={`/bangalore/pubs-&-bars/${loc.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="text-slate-400 hover:text-emerald-400 transition-colors">
-                        Pubs & Bars in {loc}
-                      </Link>
-                    </li>
-                  ))}
+                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Useful Resources</h4>
+                <ul className="space-y-2 text-slate-400">
+                  <li>
+                    <Link href="/blog" className="hover:text-emerald-400 transition-colors">
+                      Active Guides & Blog
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/admin" className="hover:text-emerald-400 transition-colors">
+                      Ops Verification Console
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/sitemap.xml" className="hover:text-emerald-400 transition-colors">
+                      XML Sitemap Index
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
