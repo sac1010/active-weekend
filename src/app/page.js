@@ -649,7 +649,7 @@ export default function ExploreDashboard() {
                 </ul>
               </div>
               <div className="space-y-3">
-                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Useful Resources</h4>
+                <h4 className="font-extrabold text-[10px] text-slate-200 uppercase tracking-wider">Useful Guides</h4>
                 <ul className="space-y-2 text-slate-400">
                   <li>
                     <Link href="/blog" className="hover:text-emerald-400 transition-colors">
@@ -657,13 +657,18 @@ export default function ExploreDashboard() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/admin" className="hover:text-emerald-400 transition-colors">
-                      Ops Verification Console
+                    <Link href="/blog/badminton-venues-hsr-layout-bangalore" className="hover:text-emerald-400 transition-colors">
+                      HSR Badminton Venues
                     </Link>
                   </li>
                   <li>
-                    <Link href="/sitemap.xml" className="hover:text-emerald-400 transition-colors">
-                      XML Sitemap Index
+                    <Link href="/blog/weekend-motorcycle-rides-bangalore" className="hover:text-emerald-400 transition-colors">
+                      Motorcycle Ride Routes
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/blog/craft-breweries-social-meetups-bangalore" className="hover:text-emerald-400 transition-colors">
+                      Microbreweries Guide
                     </Link>
                   </li>
                 </ul>
