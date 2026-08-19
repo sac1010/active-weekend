@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Bell, LogIn, LogOut, Award, ChevronDown, Sparkles, Check, CheckSquare } from 'lucide-react';
+import { Bell, LogIn, LogOut, Award, ChevronDown, Sparkles, Check, CheckSquare, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useToast } from '@/lib/ToastContext';
 
@@ -203,14 +203,15 @@ export default function Header() {
             initial={{ rotate: -15, scale: 0.9 }}
             animate={{ rotate: 0, scale: 1 }}
             transition={{ type: 'spring', stiffness: 200 }}
-            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-500 to-indigo-600 shadow-lg shadow-emerald-500/20"
+            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/30"
           >
-            <span className="font-bold text-white text-lg sm:text-xl">A</span>
+            <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-white fill-white" />
           </motion.div>
-          <div>
-            <h1 className="text-sm sm:text-lg font-bold tracking-tight bg-gradient-to-r from-emerald-400 to-indigo-300 bg-clip-text text-transparent">
+          <div className="flex flex-col">
+            <h1 className="text-sm sm:text-base font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent leading-none">
               ActiveWeekend
             </h1>
+            <span className="text-[9px] text-slate-500 font-semibold uppercase tracking-widest leading-none mt-0.5 hidden sm:block">Bangalore</span>
           </div>
         </div>
 

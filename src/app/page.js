@@ -217,7 +217,7 @@ export default function ExploreDashboard() {
         >
           <div className="space-y-1.5 text-center md:text-left z-10">
             <h2 className="text-xl md:text-2xl font-extrabold text-white flex items-center justify-center md:justify-start gap-2">
-              Namma Bengaluru, Connect Active! <Sparkles className="h-5 w-5 text-emerald-400 animate-pulse" />
+              Connect. Play. Explore. <Sparkles className="h-5 w-5 text-emerald-400 animate-pulse" />
             </h2>
             <p className="text-slate-400 text-xs md:text-sm max-w-lg leading-relaxed">
               Find local group rides, board game tables, sports partners, and cafe socials in your layout. 100% Free, community-driven, and moderated by TrustPoints.
@@ -242,7 +242,7 @@ export default function ExploreDashboard() {
 
           <div className="space-y-3.5 max-w-3xl z-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider">
-              Namma Bengaluru Meetups
+              Connect. Play. Explore.
             </span>
             <h1 className="text-2xl md:text-5xl font-black text-white leading-tight tracking-tight">
               Host & Join Local Meetups, Sports, and Hangouts in Bangalore
@@ -675,7 +675,7 @@ export default function ExploreDashboard() {
               </div>
             </div>
             <div className="border-t border-slate-900/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10.5px] text-slate-500">
-              <p>© 2026 ActiveWeekend. Namma Bengaluru's premier weekend coordinator.</p>
+              <p>© 2026 ActiveWeekend · Connect. Play. Explore.</p>
             </div>
           </div>
         </footer>
