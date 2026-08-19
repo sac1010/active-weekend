@@ -27,16 +27,6 @@ export const ACTIVITIES = [
     fallbackImage: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=800&q=80"
   },
   { 
-    name: "Pickleball", 
-    value: "Pickleball", 
-    color: "orange",
-    icon: "🏓",
-    bgClass: "bg-orange-500/10",
-    textClass: "text-orange-400",
-    borderClass: "border-pickleball",
-    fallbackImage: "https://images.unsplash.com/photo-1601646761285-65bfa67cd7a3?w=800&q=80"
-  },
-  { 
     name: "Board Games", 
     value: "Board Games", 
     color: "indigo",
@@ -125,6 +115,16 @@ export const ACTIVITIES = [
     textClass: "text-rose-400",
     borderClass: "border-football",
     fallbackImage: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=800&q=80"
+  },
+  { 
+    name: "Pickleball", 
+    value: "Pickleball", 
+    color: "orange",
+    icon: "🏓",
+    bgClass: "bg-orange-500/10",
+    textClass: "text-orange-400",
+    borderClass: "border-pickleball",
+    fallbackImage: "https://images.unsplash.com/photo-1601646761285-65bfa67cd7a3?w=800&q=80"
   }
 ];
 
