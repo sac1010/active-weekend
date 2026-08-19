@@ -6,7 +6,6 @@ export default async function sitemap() {
   // 1. Static Routes
   const staticRoutes = [
     { url: baseUrl, lastModified: new Date() },
-    { url: `${baseUrl}/admin`, lastModified: new Date() },
     { url: `${baseUrl}/blog`, lastModified: new Date() }
   ];
 
