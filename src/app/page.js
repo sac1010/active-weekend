@@ -671,10 +671,6 @@ export default function ExploreDashboard() {
             </div>
             <div className="border-t border-slate-900/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10.5px] text-slate-500">
               <p>© 2026 ActiveWeekend. Namma Bengaluru's premier weekend coordinator.</p>
-              <div className="flex gap-4">
-                <Link href="/blog" className="hover:text-slate-350 transition-colors">Blog</Link>
-                <Link href="/admin" className="hover:text-slate-350 transition-colors">Ops Console</Link>
-              </div>
             </div>
           </div>
         </footer>
