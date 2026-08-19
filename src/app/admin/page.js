@@ -52,6 +52,20 @@ export default function AdminConsole() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    if (isMock) {
+      setCurrentUser({ id: 'mock-admin', email: 'admin@activeweekend.in' });
+      fetchAdminData();
+      return;
+    }
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/admin`
+      }
+    });
+  };
+
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -67,14 +81,22 @@ export default function AdminConsole() {
         <Shield className="h-16 w-16 text-rose-500 animate-pulse" />
         <h2 className="text-xl font-bold text-white">Access Denied</h2>
         <p className="text-slate-400 text-xs max-w-sm leading-relaxed">
-          The Admin Console is restricted to authenticated staff. Please sign in with an authorized account from the home page.
+          The Admin Console is restricted to authenticated staff. Please sign in with an authorized account to continue.
         </p>
-        <Link 
-          href="/" 
-          className="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-semibold text-xs flex items-center gap-1.5"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to Dashboard
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button 
+            onClick={handleGoogleSignIn}
+            className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-lg transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            Sign In with Google
+          </button>
+          <Link 
+            href="/" 
+            className="px-5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800 transition-all font-semibold text-xs flex items-center justify-center gap-1.5"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+          </Link>
+        </div>
       </div>
     );
   }
