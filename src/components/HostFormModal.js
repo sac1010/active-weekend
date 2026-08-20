@@ -26,6 +26,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
   const [costType, setCostType] = useState('Free');
   const [costValue, setCostValue] = useState(0);
   const [description, setDescription] = useState('');
+  const [womenOnly, setWomenOnly] = useState(false);
 
   const isMock = (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('placeholder') ?? true) || (currentUser?.id === '00000000-0000-0000-0000-000000000000');
 
@@ -98,7 +99,8 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
       cost_value: 0,
       description,
       status: 'Open',
-      cover_image_url: uploadedImageUrl
+      cover_image_url: uploadedImageUrl,
+      women_only: womenOnly
     };
 
     if (isMock) {
@@ -402,6 +404,26 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500/50"
               />
+            </div>
+
+            {/* Women-only toggle */}
+            <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-800 bg-slate-950/40">
+              <div>
+                <p className="text-[11px] font-extrabold text-white">🟣 Women-only Event</p>
+                <p className="text-[10px] text-slate-500 mt-0.5">Only women can join this event roster</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setWomenOnly(w => !w)}
+                className={`relative w-10 h-5.5 rounded-full transition-colors shrink-0 ${
+                  womenOnly ? 'bg-purple-500' : 'bg-slate-700'
+                }`}
+                aria-label="Toggle women-only event"
+              >
+                <span className={`absolute top-0.5 left-0.5 h-4.5 w-4.5 rounded-full bg-white shadow transition-transform ${
+                  womenOnly ? 'translate-x-4' : 'translate-x-0'
+                }`} />
+              </button>
             </div>
 
             {/* Submit Actions */}

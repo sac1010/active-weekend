@@ -500,9 +500,16 @@ export default function ExploreDashboard() {
 
                   {/* Title & Venue */}
                   <div className="space-y-1">
-                    <h3 className="text-base font-bold text-white leading-snug truncate">
-                      {event.title}
-                    </h3>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h3 className="text-base font-bold text-white leading-snug truncate">
+                        {event.title}
+                      </h3>
+                      {event.women_only && (
+                        <span className="shrink-0 px-1.5 py-0.5 rounded text-[8px] font-extrabold uppercase tracking-wider bg-purple-500/15 text-purple-400 border border-purple-500/20">
+                          🟣 Women Only
+                        </span>
+                      )}
+                    </div>
                     <p className="text-slate-400 text-xs flex items-center gap-1.5">
                       <MapPin className="h-3.5 w-3.5 text-slate-500" />
                       <span className="truncate">{event.locality} · {event.venue_name}</span>

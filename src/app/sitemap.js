@@ -1,15 +1,25 @@
 import { ACTIVITIES, LOCALITIES } from '@/lib/constants';
+import { getBlogPosts } from '@/lib/blogParser';
 
 export default async function sitemap() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.in';
 
   // 1. Static Routes
   const staticRoutes = [
-    { url: baseUrl, lastModified: new Date() },
-    { url: `${baseUrl}/blog`, lastModified: new Date() }
+    { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 },
+    { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 }
   ];
 
-  // 2. Programmatic Landing Combinations (770 Pages)
+  // 2. Blog Posts
+  const blogPosts = getBlogPosts();
+  const blogRoutes = blogPosts.map(post => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.metadata.date || new Date()),
+    changeFrequency: 'monthly',
+    priority: 0.7
+  }));
+
+  // 3. Programmatic Landing Combinations (770+ Pages)
   const programmaticRoutes = [];
   ACTIVITIES.forEach(act => {
     const activitySlug = act.value.toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -17,12 +27,14 @@ export default async function sitemap() {
       const localitySlug = loc.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       programmaticRoutes.push({
         url: `${baseUrl}/bangalore/${activitySlug}/${localitySlug}`,
-        lastModified: new Date()
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.6
       });
     });
   });
 
-  // 3. Dynamic Public Event details from Supabase
+  // 4. Dynamic Public Event details from Supabase
   const dynamicRoutes = [];
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -42,7 +54,9 @@ export default async function sitemap() {
         events.forEach(evt => {
           dynamicRoutes.push({
             url: `${baseUrl}/event/${evt.id}`,
-            lastModified: new Date(evt.updated_at || new Date())
+            lastModified: new Date(evt.updated_at || new Date()),
+            changeFrequency: 'daily',
+            priority: 0.9
           });
         });
       }
@@ -51,5 +65,5 @@ export default async function sitemap() {
     }
   }
 
-  return [...staticRoutes, ...programmaticRoutes, ...dynamicRoutes];
+  return [...staticRoutes, ...blogRoutes, ...programmaticRoutes, ...dynamicRoutes];
 }
