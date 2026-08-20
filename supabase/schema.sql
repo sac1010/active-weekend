@@ -28,6 +28,8 @@
             cost_value INTEGER DEFAULT 0 CONSTRAINT positive_cost CHECK (cost_value >= 0),
             description TEXT NOT NULL,
             photo_url TEXT,              -- Link to verified group photo in Supabase Storage
+            cover_image_url TEXT,        -- Optional banner image set by host at creation
+            women_only BOOLEAN DEFAULT false, -- If true, only women can join this roster
             status TEXT DEFAULT 'Open' CHECK (status IN ('Open', 'Completed', 'Cancelled')),
             created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
         );
