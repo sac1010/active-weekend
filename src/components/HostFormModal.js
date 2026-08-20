@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, compressImage } from '@/lib/supabase';
 import { LOCALITIES, ACTIVITIES, SKILL_LEVELS } from '@/lib/constants';
-import { X, Calendar, Clock, MapPin, DollarSign, Users, Award, Lock } from 'lucide-react';
+import { X, Calendar, Clock, MapPin, Users, Award, Minus, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useToast } from '@/lib/ToastContext';
 
@@ -176,7 +176,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
       >
         <div className="flex justify-between items-center border-b border-slate-800 pb-3">
           <h3 className="font-extrabold text-base text-white flex items-center gap-2">
-            <Award className="h-5 w-5 text-emerald-400" /> Host Weekend Match
+            <Award className="h-5 w-5 text-emerald-400" /> Host an Event
           </h3>
           <button onClick={onClose} className="p-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white">
             <X className="h-4.5 w-4.5" />
@@ -193,28 +193,39 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
             {/* Title & Activity */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Match Title</label>
+                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Event Title</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Sat Morning Doubles"
+                  placeholder="e.g. Chill Saturday Cycling Crew"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-slate-700"
+                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500/50"
                 />
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Sport / Activity</label>
-                <select
-                  value={activityType}
-                  onChange={(e) => setActivityType(e.target.value)}
-                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-slate-700"
-                >
-                  {ACTIVITIES.map(act => (
-                    <option key={act.value} value={act.value}>{act.name}</option>
+                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Activity Type</label>
+                <div className="grid grid-cols-5 gap-1.5">
+                  {ACTIVITIES.slice(0, 10).map(act => (
+                    <button
+                      key={act.value}
+                      type="button"
+                      onClick={() => setActivityType(act.value)}
+                      title={act.name}
+                      className={`flex flex-col items-center justify-center gap-0.5 py-1.5 rounded-lg border text-base transition-all ${
+                        activityType === act.value
+                          ? `${act.bgClass} ${act.borderClass} scale-105 shadow-md`
+                          : 'border-slate-800 bg-slate-950/40 hover:border-slate-700'
+                      }`}
+                    >
+                      <span>{act.icon}</span>
+                      <span className={`text-[8px] font-bold leading-none truncate w-full text-center px-0.5 ${activityType === act.value ? act.textClass : 'text-slate-500'}`}>
+                        {act.name.split(' ')[0]}
+                      </span>
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
             </div>
 
@@ -225,7 +236,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
                 <select
                   value={locality}
                   onChange={(e) => setLocality(e.target.value)}
-                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-slate-700"
+                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500/50"
                 >
                   {LOCALITIES.map(loc => (
                     <option key={loc} value={loc}>{loc}</option>
@@ -234,13 +245,13 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
               </div>
 
               <div className="sm:col-span-2 space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Exact Venue Address</label>
-                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
+                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Venue / Meeting Point</label>
+                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 focus-within:ring-1 focus-within:ring-emerald-500 focus-within:border-emerald-500/50">
                   <MapPin className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Play Arena Court 3, Sarjapur"
+                    placeholder="e.g. Cubbon Park Gate 2, Indiranagar"
                     value={venueName}
                     onChange={(e) => setVenueName(e.target.value)}
                     className="w-full bg-transparent text-slate-200 focus:outline-none"
@@ -250,25 +261,49 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
             </div>
 
             {/* Date & Time & Skill */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="space-y-1">
-                <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Match Date</label>
-                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
-                  <Calendar className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
-                  <input
-                    type="date"
-                    required
-                    min={new Date().toISOString().split('T')[0]}
-                    value={eventDate}
-                    onChange={(e) => setEventDate(e.target.value)}
-                    className="bg-transparent text-slate-200 focus:outline-none w-full [color-scheme:dark]"
-                  />
-                </div>
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Event Date</label>
+              <div className="flex gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const d = new Date();
+                    d.setDate(d.getDate() + (6 - d.getDay() + 1) % 7 || 7);
+                    setEventDate(d.toISOString().split('T')[0]);
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 text-[10px] font-semibold transition-colors"
+                >
+                  This Weekend
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const d = new Date();
+                    d.setDate(d.getDate() + (6 - d.getDay() + 8) % 7 + 7);
+                    setEventDate(d.toISOString().split('T')[0]);
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 text-[10px] font-semibold transition-colors"
+                >
+                  Next Weekend
+                </button>
               </div>
+              <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 focus-within:ring-1 focus-within:ring-emerald-500">
+                <Calendar className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
+                <input
+                  type="date"
+                  required
+                  min={new Date().toISOString().split('T')[0]}
+                  value={eventDate}
+                  onChange={(e) => setEventDate(e.target.value)}
+                  className="bg-transparent text-slate-200 focus:outline-none w-full [color-scheme:dark]"
+                />
+              </div>
+            </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="space-y-1">
                 <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Start Time</label>
-                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
+                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 focus-within:ring-1 focus-within:ring-emerald-500">
                   <Clock className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
                   <input
                     type="time"
@@ -282,7 +317,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
 
               <div className="space-y-1">
                 <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">End Time</label>
-                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
+                <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 focus-within:ring-1 focus-within:ring-emerald-500">
                   <Clock className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
                   <input
                     type="time"
@@ -299,7 +334,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
                 <select
                   value={skillLevel}
                   onChange={(e) => setSkillLevel(e.target.value)}
-                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-slate-700"
+                  className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500/50"
                 >
                   {SKILL_LEVELS.map(lvl => (
                     <option key={lvl} value={lvl}>{lvl}</option>
@@ -308,27 +343,36 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
               </div>
             </div>
 
-            {/* Roster Size */}
+            {/* Roster Size stepper */}
             <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Max Squad Size</label>
-              <div className="flex items-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2">
-                <Users className="h-4 w-4 text-slate-500 mr-2 shrink-0" />
-                <input
-                  type="number"
-                  required
-                  min={2}
-                  placeholder="4"
-                  value={maxSlots}
-                  onChange={(e) => setMaxSlots(e.target.value)}
-                  className="bg-transparent text-slate-200 focus:outline-none w-full"
-                />
+              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Max Group Size</label>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setMaxSlots(s => Math.max(2, Number(s) - 1))}
+                  className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-colors"
+                >
+                  <Minus className="h-3.5 w-3.5" />
+                </button>
+                <div className="flex-1 flex items-center justify-center bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2 gap-2">
+                  <Users className="h-4 w-4 text-slate-500" />
+                  <span className="text-slate-200 font-bold text-sm w-6 text-center">{maxSlots}</span>
+                  <span className="text-slate-500 text-[10px]">people</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setMaxSlots(s => Math.min(50, Number(s) + 1))}
+                  className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 transition-colors"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
               </div>
             </div>
 
             {/* Optional Cover Image Banner */}
             <div className="space-y-1">
               <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                Event Cover Image (Optional)
+                Cover Photo (Optional)
               </label>
               <div className="flex items-center justify-between gap-3 p-3 rounded-xl border border-slate-800 bg-slate-950/40">
                 <input
@@ -338,23 +382,25 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
                   className="text-slate-400 hover:text-slate-200 text-xs w-full file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[10px] file:font-semibold file:bg-slate-900 file:text-slate-300 hover:file:bg-slate-800 file:cursor-pointer"
                 />
                 {coverImage && (
-                  <span className="text-[10px] text-emerald-400 font-bold shrink-0">
-                    Selected
-                  </span>
+                  <img
+                    src={URL.createObjectURL(coverImage)}
+                    alt="Cover preview"
+                    className="h-10 w-16 object-cover rounded-lg border border-slate-700 shrink-0"
+                  />
                 )}
               </div>
             </div>
 
             {/* Description Notes */}
             <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Session Details / Roster Rules</label>
+              <label className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Details & What to Expect</label>
               <textarea
                 required
                 rows={3}
-                placeholder="e.g. Bring your own rackets. We will split shuttlecock costs equally. Playing doubles format..."
+                placeholder="e.g. Casual and friendly vibe. Bring your own gear if you have it. We'll sort out logistics on WhatsApp!"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:border-slate-700"
+                className="w-full bg-slate-950/40 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500/50"
               />
             </div>
 
@@ -363,9 +409,9 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
               <button
                 type="submit"
                 disabled={submitting}
-                className="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all"
+                className="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-lg transition-all disabled:opacity-60"
               >
-                {submitting ? 'Creating Event...' : 'Publish Match Listing'}
+                {submitting ? 'Creating Event...' : 'Publish Event'}
               </button>
               <button
                 type="button"

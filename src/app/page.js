@@ -228,7 +228,7 @@ export default function ExploreDashboard() {
             className="relative px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-xl shadow-emerald-950/45 transition-all flex items-center gap-2 shrink-0 active:scale-95 z-10"
           >
             <Plus className="h-4.5 w-4.5 stroke-[3px]" />
-            <span>Host Weekend Game</span>
+            <span>Host an Event</span>
           </button>
           {/* Glow decoration */}
           <div className="absolute -right-10 -bottom-10 h-32 w-32 rounded-full bg-emerald-500/10 blur-3xl" />
@@ -675,7 +675,7 @@ export default function ExploreDashboard() {
               </div>
             </div>
             <div className="border-t border-slate-900/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10.5px] text-slate-500">
-              <p>© 2026 ActiveWeekend · Connect. Play. Explore.</p>
+              <p>© {new Date().getFullYear()} ActiveWeekend · Connect. Play. Explore.</p>
             </div>
           </div>
         </footer>
