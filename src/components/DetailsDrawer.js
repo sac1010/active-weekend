@@ -9,6 +9,27 @@ import { compressImage } from '@/lib/supabase'; // We'll add this canvas utility
 import { ACTIVITIES } from '@/lib/constants';
 import { useToast } from '@/lib/ToastContext';
 
+const triggerEmailNotification = async (to, type, event) => {
+  if (!to) return;
+  try {
+    await fetch('/api/email/notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to,
+        type,
+        eventTitle: event.title,
+        eventDate: event.event_date,
+        eventTime: event.event_time,
+        venueName: event.venue_name,
+        locality: event.locality
+      })
+    });
+  } catch (err) {
+    console.error('Failed to send email notification:', err);
+  }
+};
+
 // Custom modern X (formerly Twitter) SVG Icon
 function XIcon(props) {
   return (
@@ -277,6 +298,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
       });
 
       setIsJoined(true);
+      triggerEmailNotification(currentUser.email, 'join', event);
       if (onActionComplete) onActionComplete();
       fetchDetails();
     } catch (e) {
@@ -357,6 +379,7 @@ export default function DetailsDrawer({ eventId, currentUser, onClose, onActionC
 
       setIsJoined(false);
       setBookingRecord(null);
+      triggerEmailNotification(currentUser.email, 'leave', event);
       if (onActionComplete) onActionComplete();
       fetchDetails();
     } catch (e) {

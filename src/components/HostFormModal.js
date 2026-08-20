@@ -156,6 +156,21 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
         message: `Your match "${title}" in ${locality} has been successfully hosted. Invite friends using the direct link!`
       });
 
+      // 4. Trigger Email Notification (Non-blocking)
+      fetch('/api/email/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: currentUser.email,
+          type: 'host',
+          eventTitle: title,
+          eventDate: eventDate,
+          eventTime: event_time,
+          venueName: venueName,
+          locality: locality
+        })
+      }).catch(err => console.error('Failed to trigger host email notification:', err));
+
       if (onActionComplete) onActionComplete();
       onClose();
     } catch (err) {
