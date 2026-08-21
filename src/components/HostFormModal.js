@@ -200,13 +200,7 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
           </button>
         </div>
 
-        {loadingProfile ? (
-          <div className="text-center py-10 space-y-2">
-            <div className="h-5 w-5 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs text-slate-500">Checking host level...</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 text-xs text-slate-300">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs text-slate-300">
             {/* Title & Activity */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
@@ -459,7 +453,6 @@ export default function HostFormModal({ currentUser, onClose, onActionComplete }
               </button>
             </div>
           </form>
-        )}
       </motion.div>
     </div>
   );
