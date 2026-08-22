@@ -2,7 +2,7 @@ import { ACTIVITIES, LOCALITIES } from '@/lib/constants';
 import { getBlogPosts } from '@/lib/blogParser';
 
 export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.in';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.fun';
 
   // 1. Static Routes
   const staticRoutes = [

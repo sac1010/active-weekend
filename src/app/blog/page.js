@@ -6,7 +6,7 @@ export const metadata = {
   title: 'ActiveWeekend Blog — Bangalore Outdoor Guides, Court Tips & Weekend Ideas',
   description: 'Read local guides on badminton courts, cycling routes, trekking trails, craft breweries, and weekend activities in Bangalore. Curated by the ActiveWeekend community.',
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.in'}/blog`
+    canonical: `${process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.fun'}/blog`
   }
 };
 

@@ -80,7 +80,7 @@ export async function POST(request) {
             <p>The coordination chat room for this event is now unlocked for you. Feel free to connect with the host and fellow players to plan transport or split cost details.</p>
             
             <div style="text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.in'}" style="${buttonStyle}">Open ActiveWeekend</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.fun'}" style="${buttonStyle}">Open ActiveWeekend</a>
             </div>
           </div>
           
@@ -121,7 +121,7 @@ export async function POST(request) {
             </ul>
             
             <div style="text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.in'}" style="${buttonStyle}">View Hosted Event</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.fun'}" style="${buttonStyle}">View Hosted Event</a>
             </div>
           </div>
           
@@ -152,7 +152,7 @@ export async function POST(request) {
             </p>
             
             <div style="text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.in'}" style="${buttonStyle}">Explore Other Squads</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.fun'}" style="${buttonStyle}">Explore Other Squads</a>
             </div>
           </div>
           

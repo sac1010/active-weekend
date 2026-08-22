@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.in';
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://activeweekend.fun';
 
 export const metadata = {
   metadataBase: new URL(baseUrl),
