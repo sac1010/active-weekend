@@ -93,7 +93,9 @@ export default function ExploreDashboard() {
 
       // Modify query based on Tab
       if (activeTab === 'explore') {
-        query = query.eq('status', 'Open');
+        // Only show Open events from today onwards — past events are hidden
+        const today = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+        query = query.eq('status', 'Open').gte('event_date', today);
       } else if (activeTab === 'scheduled') {
         if (!currentUser) {
           setEvents([]);
@@ -122,7 +124,7 @@ export default function ExploreDashboard() {
         query = query.eq('host_id', currentUser.id);
       }
 
-      const { data, error } = await query.order('event_date', { ascending: true });
+      const { data, error } = await query.order('event_date', { ascending: true }).limit(50);
 
       if (error) throw error;
       setEvents(data || []);
