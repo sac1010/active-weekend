@@ -237,36 +237,35 @@ export default function ExploreDashboard() {
           <div className="absolute -left-10 -top-10 h-32 w-32 rounded-full bg-indigo-500/10 blur-3xl" />
         </motion.div>
       ) : (
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-[#0a0f1d] to-[#05070e] p-8 md:p-14 border border-slate-800/80 shadow-2xl flex flex-col items-center text-center gap-6">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent opacity-70" />
-          <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-teal-500/10 blur-3xl" />
-          <div className="absolute -right-12 -bottom-12 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-[#0a0f1d] to-[#05070e] p-8 md:p-12 border border-slate-800/80 shadow-2xl flex flex-col items-center text-center gap-6">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-500/5 via-transparent to-transparent opacity-60" />
+          <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-indigo-500/5 blur-3xl" />
+          <div className="absolute -right-12 -bottom-12 h-64 w-64 rounded-full bg-emerald-500/5 blur-3xl" />
 
-          <div className="space-y-4 max-w-3xl z-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-extrabold uppercase tracking-widest">
-              <Sparkles className="h-3.5 w-3.5" /> Namma Bangalore Community Hub
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-none">
-              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200 bg-clip-text text-transparent">
-                ActiveWeekend
-              </span>
-            </h1>
-            
-            <h2 className="text-xl md:text-3xl font-extrabold text-slate-100 tracking-tight leading-snug">
+          <div className="space-y-3.5 max-w-3xl z-10">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider">
+              Connect. Play. Explore.
+            </span>
+            <h1 className="text-2xl md:text-5xl font-black text-white leading-tight tracking-tight">
               Host & Join Local Meetups, Sports, and Hangouts in Bangalore
-            </h2>
-            
-            <p className="text-slate-400 text-xs md:text-sm leading-relaxed max-w-2xl mx-auto pt-1">
-              Discover active badminton court shares, cycling crews, weekend trekking expeditions, and casual pub hangouts. 100% Free, community-driven, and moderated by TrustPoints reliability scores.
+            </h1>
+            <p className="text-slate-400 text-xs md:text-base leading-relaxed max-w-2xl mx-auto">
+              Discover active cycling crews, book court shares, join trekking expeditions, or meet new people at pubs and cafes. 100% Free, community-driven, and moderated by TrustPoints reliability scores.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3.5 z-10 w-full sm:w-auto">
             <button
               onClick={() => {
-                const signInBtn = document.querySelector('[aria-label="Sign-In with Google"]');
-                if (signInBtn) signInBtn.click();
+                const signInBtn = document.getElementById('google-signin-btn') || document.querySelector('[aria-label="Sign-In with Google"]');
+                if (signInBtn) {
+                  signInBtn.click();
+                } else {
+                  supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: { redirectTo: window.location.origin }
+                  });
+                }
               }}
               className="px-8 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs shadow-xl shadow-emerald-950/45 transition-all flex items-center justify-center gap-2 active:scale-95"
             >
@@ -281,12 +280,6 @@ export default function ExploreDashboard() {
             >
               Browse Active Roster
             </button>
-          </div>
-
-          <div className="pt-4 border-t border-slate-800/60 w-full max-w-xl z-10">
-            <p className="text-[11px] text-slate-500 leading-relaxed">
-              <strong className="text-slate-400 font-semibold">About ActiveWeekend:</strong> ActiveWeekend is a free community platform for finding and organizing local sports events and interest groups in Bangalore. We use secure Google Sign-In to verify player identities, protect squad rosters from spam, and maintain a safe, high-trust community.
-            </p>
           </div>
         </div>
       )}

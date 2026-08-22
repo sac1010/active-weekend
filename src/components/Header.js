@@ -340,6 +340,8 @@ export default function Header() {
           ) : (
             /* Sign In Button */
             <button
+              id="google-signin-btn"
+              aria-label="Sign-In with Google"
               onClick={handleLogin}
               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-500 font-medium text-xs text-white shadow-lg shadow-indigo-950/30 transition-all active:scale-95"
             >
