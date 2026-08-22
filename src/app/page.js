@@ -244,13 +244,13 @@ export default function ExploreDashboard() {
 
           <div className="space-y-3.5 max-w-3xl z-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider">
-              Connect. Play. Explore.
+              ActiveWeekend — Connect. Play. Explore.
             </span>
             <h1 className="text-2xl md:text-5xl font-black text-white leading-tight tracking-tight">
-              Host & Join Local Meetups, Sports, and Hangouts in Bangalore
+              ActiveWeekend — Host & Join Local Meetups, Sports, and Hangouts in Bangalore
             </h1>
             <p className="text-slate-400 text-xs md:text-base leading-relaxed max-w-2xl mx-auto">
-              Discover active cycling crews, book court shares, join trekking expeditions, or meet new people at pubs and cafes. 100% Free, community-driven, and moderated by TrustPoints reliability scores.
+              Discover active cycling crews, book court shares, join trekking expeditions, or meet new people at pubs and cafes. 100% Free, community-driven, and moderated by TrustPoints. Securely sign in using your Google account to join squads, view chat rooms, and coordinate with verified local hosts.
             </p>
           </div>
 
