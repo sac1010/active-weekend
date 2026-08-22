@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { LOCALITIES, ACTIVITIES, SKILL_LEVELS } from '@/lib/constants';
 import { MOCK_EVENTS } from '@/lib/mockData';
-import { Search, MapPin, Calendar, Filter, Plus, SlidersHorizontal, RefreshCw, Sparkles, Award } from 'lucide-react';
+import { Search, MapPin, Calendar, Filter, Plus, SlidersHorizontal, RefreshCw, Sparkles, Award, ShieldCheck, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DetailsDrawer from '@/components/DetailsDrawer';
 import HostFormModal from '@/components/HostFormModal';
@@ -246,9 +246,14 @@ export default function ExploreDashboard() {
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider">
               Connect. Play. Explore.
             </span>
-            <h1 className="text-2xl md:text-5xl font-black text-white leading-tight tracking-tight">
-              Host & Join Local Meetups, Sports, and Hangouts in Bangalore
+            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-none">
+              <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200 bg-clip-text text-transparent">
+                ActiveWeekend
+              </span>
             </h1>
+            <h2 className="text-xl md:text-3xl font-extrabold text-slate-100 tracking-tight leading-snug">
+              Host & Join Local Meetups, Sports, and Hangouts in Bangalore
+            </h2>
             <p className="text-slate-400 text-xs md:text-base leading-relaxed max-w-2xl mx-auto">
               Discover active cycling crews, book court shares, join trekking expeditions, or meet new people at pubs and cafes. 100% Free, community-driven, and moderated by TrustPoints reliability scores.
             </p>
@@ -584,9 +589,148 @@ export default function ExploreDashboard() {
         )}
       </AnimatePresence>
 
-      {/* Dynamic Link SEO Footer Grid - Only shown to Guests/Search Crawlers to keep logged-in app clean */}
+      {/* Dynamic Link SEO Footer Grid & Platform Info - Only shown to Guests/Search Crawlers to keep logged-in app clean */}
       {!currentUser && (
-        <footer className="border-t border-slate-800/80 bg-slate-950/20 backdrop-blur-md py-12 px-6 mt-16 rounded-3xl max-w-6xl mx-auto shadow-2xl">
+        <div className="space-y-16 mt-16 max-w-6xl mx-auto">
+          {/* How ActiveWeekend Works - Feature Grid */}
+          <div className="space-y-8 text-center">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider">
+                <Sparkles className="h-3 w-3" /> Community Platform Guide
+              </div>
+              <h3 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                How ActiveWeekend Works
+              </h3>
+              <p className="text-slate-400 text-xs md:text-sm max-w-lg mx-auto">
+                Connect with sports partners, group rides, and casual hangouts across Bangalore in 3 simple steps.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+              <div className="border border-slate-800/80 bg-slate-900/40 backdrop-blur-xl p-6 rounded-2xl space-y-3 relative overflow-hidden shadow-xl hover:border-emerald-500/30 transition-all">
+                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <h4 className="text-base font-bold text-white">1. Sports, Bars & Local Meetups</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Join badminton court shares, pickleball matches, turf football, craft brewery pub crawls, board game cafes, and cycling clubs in HSR Layout, Koramangala, Indiranagar, and Bellandur.
+                </p>
+              </div>
+
+              <div className="border border-slate-800/80 bg-slate-900/40 backdrop-blur-xl p-6 rounded-2xl space-y-3 relative overflow-hidden shadow-xl hover:border-emerald-500/30 transition-all">
+                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <h4 className="text-base font-bold text-white">2. Verified Google Sign-In</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Sign in securely with Google to verify your player identity, protect squad rosters from spam profiles, and access real-time event chat rooms to coordinate with hosts.
+                </p>
+              </div>
+
+              <div className="border border-slate-800/80 bg-slate-900/40 backdrop-blur-xl p-6 rounded-2xl space-y-3 relative overflow-hidden shadow-xl hover:border-emerald-500/30 transition-all">
+                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                  <Award className="h-5 w-5" />
+                </div>
+                <h4 className="text-base font-bold text-white">3. TrustPoints Reliability Score</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Earn +30 TrustPoints for every completed sports match, trekking trip, or meetup. Our community honor system guarantees verified, punctual squad members.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* FAQ Accordion Section with Rich SEO Keywords & FAQPage Schema */}
+          <div className="space-y-8 max-w-4xl mx-auto text-left">
+            {/* JSON-LD Schema for Google Search Rich FAQ Snippets */}
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  "mainEntity": [
+                    {
+                      "@type": "Question",
+                      "name": "What is ActiveWeekend Bangalore?",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "ActiveWeekend is a free community platform in Bangalore for organizing and joining sports games (badminton, pickleball, football), craft brewery social hangouts, cafe meetups, cycling crews, and weekend trekking trips across HSR Layout, Koramangala, Indiranagar, Bellandur, and Whitefield."
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Why do I need to sign in with Google?",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "ActiveWeekend uses Google OAuth authentication to verify player identities, prevent fake bot accounts, and grant access to squad event chat rooms to ensure a safe, high-trust community."
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "What sports and social events can I host or join?",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "You can host or join badminton court split shares, pickleball games, box cricket, turf football, weekend trekking expeditions near Nandi Hills or Savandurga, board game cafe meetups, and brewery pub crawls in Bangalore."
+                      }
+                    },
+                    {
+                      "@type": "Question",
+                      "name": "Is ActiveWeekend free to use?",
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes, ActiveWeekend is 100% free with no membership fees. Venue rentals or food/drink costs are split peer-to-peer directly among participants offline."
+                      }
+                    }
+                  ]
+                })
+              }}
+            />
+
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider">
+                <HelpCircle className="h-3 w-3" /> Questions & Answers
+              </div>
+              <h3 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+                Frequently Asked Questions
+              </h3>
+              <p className="text-slate-400 text-xs md:text-sm">
+                Everything you need to know about ActiveWeekend sports, social events, and sports court shares in Bangalore.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="border border-slate-800/80 bg-slate-900/40 backdrop-blur-xl rounded-2xl p-5 space-y-2">
+                <h4 className="font-bold text-sm text-white">What is ActiveWeekend Bangalore?</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  ActiveWeekend is a free community platform in Bangalore for organizing and joining sports games (badminton, pickleball, football), craft brewery social hangouts, cafe meetups, cycling crews, and weekend trekking trips across HSR Layout, Koramangala, Indiranagar, Bellandur, and Whitefield.
+                </p>
+              </div>
+
+              <div className="border border-slate-800/80 bg-slate-900/40 backdrop-blur-xl rounded-2xl p-5 space-y-2">
+                <h4 className="font-bold text-sm text-white">Why do I need to sign in with Google?</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  We use secure Google Sign-In to verify user identities, protect squad rosters from spam accounts, and maintain a high-trust, safe community for offline sports and social meetups. We never share or sell personal data.
+                </p>
+              </div>
+
+              <div className="border border-slate-800/80 bg-slate-900/40 backdrop-blur-xl rounded-2xl p-5 space-y-2">
+                <h4 className="font-bold text-sm text-white">What sports and social activities are available?</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  You can find badminton court splits, pickleball matches, box cricket, turf football, weekend trekking expeditions (Nandi Hills, Skandagiri, Savandurga), board game cafe meetups, microbrewery pub crawls, and early morning cycling rides.
+                </p>
+              </div>
+
+              <div className="border border-slate-800/80 bg-slate-900/40 backdrop-blur-xl rounded-2xl p-5 space-y-2">
+                <h4 className="font-bold text-sm text-white">Is ActiveWeekend free to use?</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Yes, ActiveWeekend is 100% free with no membership fees. Any court booking costs, turf fees, or meal splits are shared directly and peer-to-peer among event attendees offline.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer Navigation Grid */}
+          <footer className="border-t border-slate-800/80 bg-slate-950/20 backdrop-blur-md py-12 px-6 rounded-3xl shadow-2xl">
           <div className="space-y-10">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-xs text-left">
               <div className="space-y-3">
@@ -700,6 +844,7 @@ export default function ExploreDashboard() {
             </div>
           </div>
         </footer>
+        </div>
       )}
     </div>
   );
