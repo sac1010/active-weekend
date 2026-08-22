@@ -685,6 +685,11 @@ export default function ExploreDashboard() {
             </div>
             <div className="border-t border-slate-900/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10.5px] text-slate-500">
               <p>© {new Date().getFullYear()} ActiveWeekend · Connect. Play. Explore.</p>
+              <div className="flex gap-4">
+                <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms of Service</Link>
+                <span>·</span>
+                <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
+              </div>
             </div>
           </div>
         </footer>
